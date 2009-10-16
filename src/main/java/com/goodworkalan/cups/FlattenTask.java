@@ -72,7 +72,7 @@ public class FlattenTask extends Task {
      * Write the artifact dependencies to the given dependency file. This method
      * was extracted to test I/O failure.
      * 
-     * @param environment
+     * @param env
      *            The execution environment.
      * @param reader
      *            The POM reader.
@@ -82,7 +82,7 @@ public class FlattenTask extends Task {
      * @param deps
      *            The dependency file.
      */
-    void flatten(Environment environment, PomReader reader, Artifact artifact, File deps) {
+    void flatten(Environment env, PomReader reader, Artifact artifact, File deps) {
         try {
             FileWriter writer = new FileWriter(deps);
             for (Artifact dependency : reader.getImmediateDependencies(artifact)) {
@@ -98,8 +98,8 @@ public class FlattenTask extends Task {
             writer.close();
         } catch (IOException e) {
             deps.delete();
-            environment.err.println("Unable to flatten POM for artifact " + artifact.toString());
-            e.printStackTrace(environment.err);
+            env.io.err.println("Unable to flatten POM for artifact " + artifact.toString());
+            e.printStackTrace(env.io.err);
         }
     }
 }

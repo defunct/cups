@@ -120,9 +120,9 @@ public class MavenTask extends Task implements RepositoryClient {
                 if (result.flag != '!') {
                     includes.addAll(Artifacts.read(new File(resolver.find(result.artifact, "dep"), result.artifact.getPath("dep"))));
                 }
-                result.print(env.out);
+                result.print(env.io.out);
             }
-            env.out.flush();
+            env.io.out.flush();
         }
         
         Set<Artifact> seen = new HashSet<Artifact>();
@@ -149,9 +149,9 @@ public class MavenTask extends Task implements RepositoryClient {
                 if (result.flag != '!') {
                     includes.addAll(Artifacts.read(new File(resolver.find(result.artifact, "dep"), artifact.getPath("dep"))));
                 }
-                result.print(env.out);
+                result.print(env.io.out);
             }
-            env.out.flush();
+            env.io.out.flush();
         }
     }
 }

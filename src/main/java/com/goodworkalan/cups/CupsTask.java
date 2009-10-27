@@ -1,6 +1,10 @@
 package com.goodworkalan.cups;
 
-import com.goodworkalan.go.go.Task;
+import com.goodworkalan.go.go.Commandable;
+import com.goodworkalan.go.go.Environment;
 
-public class CupsTask extends Task {
+
+public class CupsTask implements Commandable {
+    public void execute(Environment env) {
+    }
 }

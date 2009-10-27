@@ -13,12 +13,12 @@ import com.goodworkalan.go.go.Argument;
 import com.goodworkalan.go.go.Artifact;
 import com.goodworkalan.go.go.Artifacts;
 import com.goodworkalan.go.go.Command;
+import com.goodworkalan.go.go.Commandable;
 import com.goodworkalan.go.go.Environment;
 import com.goodworkalan.go.go.Include;
-import com.goodworkalan.go.go.Task;
 
 @Command(parent = CupsTask.class)
-public class MavenTask extends Task implements RepositoryClient {
+public class MavenTask implements Commandable {
     /** The list of Maven repositories to query. */
     private final List<URI> uris = new ArrayList<URI>();
     
@@ -89,7 +89,6 @@ public class MavenTask extends Task implements RepositoryClient {
         return results;
     }
     
-    @Override
     public void execute(Environment env) {
         if (library == null) {
             if (System.getProperty("user.home") == null) {

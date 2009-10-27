@@ -9,15 +9,15 @@ import com.goodworkalan.glob.Find;
 import com.goodworkalan.go.go.Argument;
 import com.goodworkalan.go.go.Artifact;
 import com.goodworkalan.go.go.Command;
+import com.goodworkalan.go.go.Commandable;
 import com.goodworkalan.go.go.Environment;
-import com.goodworkalan.go.go.Task;
 
 /**
  * Convert a Maven repository into a Jav-a-Go-Go library by converting Maven POM
  * files into Jav-a-Go-Go dependency files.
  */
 @Command(parent = CupsTask.class)
-public class FlattenTask extends Task {
+public class FlattenTask implements Commandable {
     private boolean force;
     
     @Argument
@@ -33,7 +33,6 @@ public class FlattenTask extends Task {
      * @param environment
      *            The execution environment.
      */
-    @Override
     public void execute(Environment environment) {
         if (force) System.out.println("WILL FORCE!");
         LinkedList<String> args = new LinkedList<String>(environment.part.getRemaining());

@@ -82,12 +82,11 @@ public class MavenResolver {
                     }
                 }
                 return false;
-            } else {
-                if (download(artifact, "pom")) {
-                    return download(artifact, suffix);
-                }
-                return false;
             }
+            if (download(artifact, "pom")) {
+                return download(artifact, suffix);
+            }
+            return false;
         }
         return fetch(uri, artifact, suffix);
     }

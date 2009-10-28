@@ -16,8 +16,8 @@ import com.goodworkalan.go.go.Environment;
  * Convert a Maven repository into a Jav-a-Go-Go library by converting Maven POM
  * files into Jav-a-Go-Go dependency files.
  */
-@Command(parent = CupsTask.class)
-public class FlattenTask implements Commandable {
+@Command(parent = CupsCommand.class)
+public class FlattenCommand implements Commandable {
     private boolean force;
     
     @Argument

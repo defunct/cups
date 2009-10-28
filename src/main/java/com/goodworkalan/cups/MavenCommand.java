@@ -17,8 +17,8 @@ import com.goodworkalan.go.go.Commandable;
 import com.goodworkalan.go.go.Environment;
 import com.goodworkalan.go.go.Include;
 
-@Command(parent = CupsTask.class)
-public class MavenTask implements Commandable {
+@Command(parent = CupsCommand.class)
+public class MavenCommand implements Commandable {
     /** The list of Maven repositories to query. */
     private final List<URI> uris = new ArrayList<URI>();
     

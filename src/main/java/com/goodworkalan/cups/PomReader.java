@@ -83,7 +83,7 @@ public class PomReader {
             throws SAXException {
                 if (depth == 2 && localName.equals("parent")) {
                     parent = false;
-                    Artifact parent = new Artifact(groupId, artifactId, version);
+                    Artifact parent = new Artifact(groupId, artifactId, version, "");
                     groupId = artifactId = version = null;
                     found[0] = parent;
                 } else if (capture) {
@@ -146,7 +146,7 @@ public class PomReader {
             throws SAXException {
                 if (depth == 2 && localName.equals("parent")) {
                     parent = false;
-                    Artifact parent = new Artifact(groupId, artifactId, version);
+                    Artifact parent = new Artifact(groupId, artifactId, version, "");
                     groupId = artifactId = version = null;
                     getDependencyManagement(parent, dependencies, optionals);
                 } else if (depth == 2 && localName.equals("properties")) {
@@ -270,7 +270,7 @@ public class PomReader {
                     deps = false;
                 } else if (depth == 4 && deps && localName.equals("dependency")) {
                     if (version != null && (scope == null || scope.equals("compile") || scope.equals("runtime")) && (optional == null || !"true".equals(optional))) {
-                        dependencies.put(groupId + "/" + artifactId, new Artifact(groupId, artifactId, version));
+                        dependencies.put(groupId + "/" + artifactId, new Artifact(groupId, artifactId, version, ""));
                     } else if ("test".equals(scope) || "provided".equals(scope) || "true".equals(optional)) {
                         optionals.add(groupId + "/" + artifactId);
                     }
@@ -355,7 +355,7 @@ public class PomReader {
                             if (!optionals.contains(key)) {
                                 Artifact artifact = dependencies.get(key);
                                 if (artifact == null) {
-                                    artifact = new Artifact(groupId, artifactId, version);
+                                    artifact = new Artifact(groupId, artifactId, version, "");
                                 }
                                 artifacts.add(artifact);
                             }

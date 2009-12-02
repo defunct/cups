@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.glob.Files;
+import com.goodworkalan.comfort.io.Files;
 import com.goodworkalan.go.go.CommandInterpreter;
 
 public class MavenTaskTest {

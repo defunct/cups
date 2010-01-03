@@ -17,23 +17,31 @@ public class IO {
     public Map<String, Artifact> read(InputStream in) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         Map<String, Artifact> map = new LinkedHashMap<String, Artifact>();
-        String line;
+        String line = null;
+        int count = 0;
         try {
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (line.length() == 0 || line.startsWith("#")) {
-                    continue;
+            try {
+                while ((line = reader.readLine()) != null) {
+                    count++;
+                        String trimmed = line.trim();
+                        if (trimmed.length() == 0 || trimmed.startsWith("#")) {
+                            continue;
+                        }
+                        if ("+-@!".contains(trimmed.substring(0, 1))) {
+                            String[] pair = trimmed.split("\\s+");
+                            if (pair.length != 2) {
+                                throw new CupsError(IO.class, "bad.line");
+                            }
+                            map.put(pair[0], new Artifact(pair[1]));
+                        } else {
+                            throw new CupsError(IO.class, "bad.line");
+                        }
                 }
-                if ("+-@!".contains(line.substring(0, 1))) {
-                    String[] pair = line.split("\\s+");
-                    if (pair.length != 2) {
-                        throw new CupsException(0);
-                    }
-                    map.put(pair[0], new Artifact(pair[1]));
-                }
+            } catch (IOException e) {
+                throw new CupsError(IO.class, "read.io", e);
             }
-        } catch (IOException e) {
-            throw new CupsException(0, e);
+        } catch (CupsError e) {
+            throw e.put("count", count).put("line", line);
         }
         return map;
     }
@@ -42,7 +50,7 @@ public class IO {
         File file = new File(library, artifact.getPath("dep"));
         File directory = file.getParentFile();
         if (!(directory.isDirectory() || directory.mkdirs())) {
-            throw new CupsException(0);
+            throw new CupsError(IO.class, "mkdir").put("directory", directory);
         }
         try {
             Writer writer = new FileWriter(file);
@@ -53,7 +61,7 @@ public class IO {
             }
             writer.close();
         } catch (IOException e) {
-            throw new CupsException(0, e);
+            throw new CupsError(IO.class, "write.io", e).put("file", file);
         }
     }
 }

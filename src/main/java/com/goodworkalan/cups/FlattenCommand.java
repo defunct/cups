@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import com.goodworkalan.comfort.io.Find;
+import com.goodworkalan.cups.pom.PomReader;
 import com.goodworkalan.go.go.Argument;
 import com.goodworkalan.go.go.Artifact;
 import com.goodworkalan.go.go.Command;

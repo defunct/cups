@@ -51,7 +51,7 @@ public class MavenResolver {
             File full = new File(libraries.get(0), artifact.getPath(suffix));
             File directory = full.getParentFile();
             if (!(directory.isDirectory() || directory.mkdirs())) {
-                throw new CupsException(0);
+                throw new CupsError(MavenResolver.class, "mkdirs");
             }
             URL url = uri.resolve(artifact.getPath(suffix)).toURL();
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

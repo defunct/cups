@@ -1,9 +1,9 @@
-package com.goodworkalan.cups;
+package com.goodworkalan.cups.pom;
 
-import static com.goodworkalan.cups.CupsException.CANNOT_CREATE_XML_PARSER;
-import static com.goodworkalan.cups.CupsException.POM_FILE_NOT_FOUND;
-import static com.goodworkalan.cups.CupsException.POM_IO_EXCEPTION;
-import static com.goodworkalan.cups.CupsException.POM_SAX_EXCEPTION;
+import static com.goodworkalan.cups.pom.PomException.CANNOT_CREATE_XML_PARSER;
+import static com.goodworkalan.cups.pom.PomException.POM_FILE_NOT_FOUND;
+import static com.goodworkalan.cups.pom.PomException.POM_IO_EXCEPTION;
+import static com.goodworkalan.cups.pom.PomException.POM_SAX_EXCEPTION;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +27,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.goodworkalan.go.go.Artifact;
-import com.goodworkalan.go.go.GoException;
 import com.goodworkalan.madlib.VariableProperties;
 
 public class PomReader {
@@ -180,7 +179,7 @@ public class PomReader {
             }
         }
         if (file == null) {
-            throw new GoException(POM_FILE_NOT_FOUND);
+            throw new PomException(POM_FILE_NOT_FOUND);
         }
         parse(artifact, file, handler);
     }
@@ -190,9 +189,9 @@ public class PomReader {
             try {
                 parse(artifact, handler, new FileInputStream(file));
             } catch (FileNotFoundException e) {
-                throw new GoException(POM_FILE_NOT_FOUND, e);
+                throw new PomException(POM_FILE_NOT_FOUND, e);
             }
-        } catch (GoException e) {
+        } catch (PomException e) {
             throw e.put("file", file);
         }
     }
@@ -203,17 +202,17 @@ public class PomReader {
             try {
                 xr = XMLReaderFactory.createXMLReader();
             } catch (SAXException e) {
-                throw new GoException(CANNOT_CREATE_XML_PARSER, e);
+                throw new PomException(CANNOT_CREATE_XML_PARSER, e);
             }
             xr.setContentHandler(handler);
             try {
                 xr.parse(new InputSource(in));
             } catch (IOException e) {
-                throw new GoException(POM_IO_EXCEPTION, e);
+                throw new PomException(POM_IO_EXCEPTION, e);
             } catch (SAXException e) {
-                throw new GoException(POM_SAX_EXCEPTION, e);
+                throw new PomException(POM_SAX_EXCEPTION, e);
             }
-        } catch (GoException e) {
+        } catch (PomException e) {
             throw e.put("artifact", artifact.toString());
         }
     }

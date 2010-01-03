@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.goodworkalan.cups.pom.PomReader;
 import com.goodworkalan.go.go.Argument;
 import com.goodworkalan.go.go.Artifact;
 import com.goodworkalan.go.go.Artifacts;
@@ -92,16 +93,13 @@ public class MavenCommand implements Commandable {
     public void execute(Environment env) {
         if (library == null) {
             if (System.getProperty("user.home") == null) {
-                throw new CupsException(0);
+                throw new CupsError(MavenCommand.class, "no.user.home");
             }
             File home = new File(System.getProperty("user.home"));
-            if (!home.isDirectory()) {
-                throw new CupsException(0);
-            }
             library = new File(home, ".m2/repository");
-            if (!library.isDirectory() && !library.mkdir()) {
-                throw new CupsException(0);
-            }
+        }
+        if (!library.isDirectory() && !library.mkdir()) {
+            throw new CupsError(MavenCommand.class, "cannot.create.library");
         }
 
         LinkedList<Include> includes = new LinkedList<Include>();

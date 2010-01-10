@@ -3,10 +3,10 @@ package com.goodworkalan.cups;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.goodworkalan.danger.ContextDanger;
+import com.goodworkalan.danger.ContextualDanger;
 
 @SuppressWarnings("serial")
-public class CupsError extends ContextDanger {
+public class CupsError extends ContextualDanger {
     /** A cache of resource bundles. */
     private final static ConcurrentHashMap<String, ResourceBundle> bundles = new ConcurrentHashMap<String, ResourceBundle>();
 

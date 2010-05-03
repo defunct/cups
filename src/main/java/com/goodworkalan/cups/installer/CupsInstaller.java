@@ -61,7 +61,7 @@ public class CupsInstaller {
         };
         HttpURLConnection.setFollowRedirects(true);
         for (String[] artifact :artifacts) {
-            File full = file(library, "com", "github", "bigeasy", artifact[0], artifact[1], artifact[1], artifact[0] + "-" + artifact[2] + ".jar");
+            File full = file(library, "com", "github", "bigeasy", artifact[0], artifact[1], artifact[2], artifact[1] + "-" + artifact[2] + ".jar");
             File directory = full.getParentFile();
             if (!(directory.isDirectory() || directory.mkdirs())) {
                 throw new IOException("Cannot create directory: " + directory);

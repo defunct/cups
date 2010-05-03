@@ -56,6 +56,7 @@ public class CupsInstaller {
                 new String[] { "go-go", "go-go", "0.1.4" },
                 new String[] { "go-go", "go-go-boot", "0.1.2" },
                 new String[] { "infuse", "infuse", "0.1" },
+                new String[] { "reflective", "reflective", "0.1" },
                 new String[] { "madlib", "madlib", "0.1" },
                 new String[] { "cups", "cups", "0.1" }
         };

@@ -1,9 +1,11 @@
 package com.goodworkalan.cups.installer;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -52,7 +54,7 @@ public class CupsInstaller {
                 new String[] { "class-association", "class-association", "0.1" },
                 new String[] { "infuse", "infuse", "0.1" },
                 new String[] { "go-go", "go-go", "0.1.4" },
-                new String[] { "go-go", "go-go-bootstrap", "0.1.2" },
+                new String[] { "go-go", "go-go-boot", "0.1.2" },
                 new String[] { "infuse", "infuse", "0.1" },
                 new String[] { "madlib", "madlib", "0.1" },
                 new String[] { "cups", "cups", "0.1" }
@@ -79,18 +81,38 @@ public class CupsInstaller {
                 while ((read = in.read(buffer)) != -1) {
                     out.write(buffer, 0, read);
                 }
+                in.close();
+                out.close();
             } else {
                 System.err.println("Unable to install "+ artifact[1] + "-" + artifact[2] + ".jar.");
                 System.exit(1);
             }
             System.out.println("Installed " + artifact[1] + "-" + artifact[2] + ".jar.");
-            StringTokenizer tokenizer = new StringTokenizer(System.getProperty("java.ext.dirs"), File.pathSeparator);
-            while (tokenizer.hasMoreElements()) {
-                File file = file(tokenizer.nextToken());
-                
+        }
+        StringTokenizer tokenizer = new StringTokenizer(System.getProperty("java.ext.dirs"), File.pathSeparator);
+        boolean written = false;
+        while (tokenizer.hasMoreElements()) {
+            File dir = file(tokenizer.nextToken());
+            if (dir.canWrite()) {
+                for (File file : dir.listFiles()) {
+                    if (file.getName().startsWith("go-go-boot")) {
+                        System.out.println("Deleting old " + file.getAbsolutePath() + ".");
+                        file.delete();
+                    }
+                }
             }
-            for (String file : System.getProperty("java.ext.dirs").split(File.pathSeparator)) {
-                
+            if (!written && dir.canWrite()) {
+                System.out.println("Installing " + file(dir, "go-go-boot-0.1.2.jar").getAbsolutePath() + ".");
+                written = true;
+                InputStream in = new FileInputStream(file(library, "com", "github", "bigeasy", "go-go", "go-go-boot", "0.1.2", "go-go-boot-0.1.2.jar"));
+                OutputStream out = new FileOutputStream(file(dir, "go-go-boot-0.1.2.jar"));
+                byte[] buffer = new byte[4092];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
+                in.close();
+                out.close();
             }
         }
     }

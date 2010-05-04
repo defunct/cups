@@ -7,18 +7,26 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.goodworkalan.github4j.downloads.Download;
+import com.goodworkalan.github4j.downloads.GitHubDownloadException;
+import com.goodworkalan.github4j.downloads.GitHubDownloads;
 import com.goodworkalan.go.go.Argument;
 import com.goodworkalan.go.go.Command;
 import com.goodworkalan.go.go.Commandable;
 import com.goodworkalan.go.go.Environment;
 import com.goodworkalan.go.go.library.Artifact;
+import com.goodworkalan.go.go.library.ArtifactPart;
 import com.goodworkalan.go.go.library.Artifacts;
 import com.goodworkalan.go.go.library.Include;
+import com.goodworkalan.go.go.version.VersionSelector;
 
 
 @Command(parent = CupsCommand.class, name = "github")
@@ -49,8 +57,50 @@ public class GitHubCommand implements Commandable {
         String[] split = artifact.getGroup().split("\\.");
         return new String[] { split[2], split[3] };
     }
+    
+    private final Pattern EXTRACT_VERSION = Pattern.compile("^(?:\\w[-_\\w\\d]*\\-)+((?:\\.?\\d+)+)(.*?)$");
 
-    private boolean fetch(File library, Artifact artifact, String suffix) {
+    public Artifact getArtifact(Environment env, File library, Include include, String...suffixes) {
+        Artifact prototype = include.getArtifact();
+        String prefix = prototype.getName() + "-"; 
+        String[] repository = getRepository(prototype);
+        
+        Map<String, Set<String>> byVersion = new HashMap<String, Set<String>>();
+        try {
+            for (Download download : GitHubDownloads.getDownloads(repository[0], repository[1])) {
+                String fileName = download.getFileName();
+                if (fileName.startsWith(prefix)) {
+                    Matcher matcher = EXTRACT_VERSION.matcher(fileName);
+                    if (matcher.matches()) {
+                        String number = matcher.group(1);
+                        Set<String> candidates = byVersion.get(number);
+                        if (candidates == null) {
+                            candidates = new HashSet<String>();
+                            byVersion.put(number, candidates);
+                        }
+                        candidates.add(matcher.group(2));
+                    }
+                }
+            }
+        } catch (GitHubDownloadException e) {
+            throw new CupsError(GitHubCommand.class, "delete", e);
+        }
+        env.debug("candidates", byVersion.keySet());
+        VersionSelector versionSelector = new VersionSelector(prototype.getVersion());
+        String selected;
+        while ((selected = versionSelector.select(byVersion.keySet())) != null) {
+            Set<String> available = byVersion.remove(selected);
+            for (String suffix : suffixes) {
+                if (!available.contains(Artifact.suffix(suffix))) {
+                    continue;
+                }
+            }
+            return new Artifact(prototype.getGroup(), prototype.getName(), selected);
+        }
+        return null;
+    }
+    
+    private boolean download(Environment env, Artifact artifact, File library, String suffix, boolean required) {
         try {
             File full = new File(library, artifact.getPath(suffix));
             File directory = full.getParentFile();
@@ -69,6 +119,8 @@ public class GitHubCommand implements Commandable {
                     out.write(buffer, 0, read);
                 }
                 return true;
+            } else if (required || connection.getResponseCode() != HttpURLConnection.HTTP_NOT_FOUND) {
+                throw new CupsError(GitHubCommand.class, "http", connection.getResponseCode());
             }
             return false;
         } catch (IOException e) {
@@ -86,42 +138,44 @@ public class GitHubCommand implements Commandable {
         for (Artifact artifact : artifacts) {
             current.add(new Include(artifact));
         }
-        Set<Artifact> seen = new HashSet<Artifact>();
+        Set<Object> seen = new HashSet<Object>();
         List<Include> next = new ArrayList<Include>();
         while (!current.isEmpty()) {
             for (Include include : current) {
                 Artifact artifact = include.getArtifact();
-                if (seen.contains(artifact)) {
+                if (seen.contains(artifact.getUnversionedKey())) {
                     continue;
                 }
-                seen.add(artifact);
+                seen.add(artifact.getUnversionedKey());
                 if (!isGitHubProject(artifact)) {
                     new Result('!', artifact).print(env.io.out);
                     continue;
                 }
                 Result result = new Result('~', artifact);
-                File dir = env.library.getArtifactDirectory(artifact, "dep");
-                if (force || dir == null) {
-                    if (dir == null) {
-                        dir = library;
-                    }
-                    if (fetch(dir, artifact, "dep")) {
-                        result.suffixes.add("dep");
-                        if (fetch(dir, artifact, "jar")) {
-                            result.suffixes.add("jar");
-                            for (String suffix : in("sources/jar", "javadoc/jar")) {
-                                if (fetch(dir, artifact, suffix)) {
-                                    result.suffixes.add(suffix);
-                                }
+                ArtifactPart artifactPart = env.library.getArtifactPart(new Include(artifact), "dep", "jar");
+                if (force || artifactPart == null) {
+                    File dir =artifactPart == null ? library : artifactPart.getLibraryDirectory();
+                    Artifact found = getArtifact(env, library, include, "dep", "jar");
+                    if (found != null) {
+                        for (String suffix : in("dep", "jar")) {
+                            result.suffixes.add(suffix);
+                            download(env, found, library, suffix, true);
+                        }
+                        for (String suffix : in("sources/jar", "javadoc/jar")) {
+                            if (download(env, found, library, suffix, false)) {
+                                result.suffixes.add(suffix);
                             }
                         }
-                    }
-                    result.flag = result.suffixes.size() < 2 ? '!' : '@';
-                    if (result.flag == '@' && recurse) {
-                        next.addAll(Artifacts.read(new File(dir, artifact.getPath( "dep"))));
+                        if (recurse) {
+                            next.addAll(Artifacts.read(new File(dir, found.getPath( "dep"))));
+                        }
+                        result.artifact = found;
+                        result.flag = '@';
+                    } else {
+                        result.flag = '!';
                     }
                 } else if (recurse) { 
-                    next.addAll(Artifacts.read(new File(dir, artifact.getPath( "dep"))));
+                    next.addAll(Artifacts.read(new File(artifactPart.getLibraryDirectory(), artifactPart.getArtifact().getPath( "dep"))));
                 }
                 result.print(env.io.out);
                 env.io.out.flush();

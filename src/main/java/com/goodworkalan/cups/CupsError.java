@@ -18,8 +18,8 @@ public class CupsError extends ContextualDanger {
      * @param code
      *            The error code.
      */
-    public CupsError(Class<?> context, String code) {
-        super(bundles, context, code, null);
+    public CupsError(Class<?> context, String code, Object...arguments) {
+        super(bundles, context, code, null, arguments);
     }
 
     /**

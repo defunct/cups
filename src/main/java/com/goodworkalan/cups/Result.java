@@ -8,7 +8,7 @@ import java.util.List;
 import com.goodworkalan.go.go.library.Artifact;
 
 class Result {
-    public final Artifact artifact;
+    public Artifact artifact;
     
     public char flag;
     

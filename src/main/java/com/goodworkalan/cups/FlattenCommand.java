@@ -8,10 +8,11 @@ import java.util.LinkedList;
 import com.goodworkalan.comfort.io.Find;
 import com.goodworkalan.cups.pom.PomReader;
 import com.goodworkalan.go.go.Argument;
-import com.goodworkalan.go.go.Artifact;
 import com.goodworkalan.go.go.Command;
 import com.goodworkalan.go.go.Commandable;
 import com.goodworkalan.go.go.Environment;
+import com.goodworkalan.go.go.GoException;
+import com.goodworkalan.go.go.library.Artifact;
 
 /**
  * Convert a Maven repository into a Jav-a-Go-Go library by converting Maven POM
@@ -36,7 +37,7 @@ public class FlattenCommand implements Commandable {
      */
     public void execute(Environment environment) {
         if (force) System.out.println("WILL FORCE!");
-        LinkedList<String> args = new LinkedList<String>(environment.part.getRemaining());
+        LinkedList<String> args = new LinkedList<String>(environment.remaining);
         String repository = args.removeFirst();
         File directory = new File(repository);
         if (directory.isDirectory()) {
@@ -58,7 +59,12 @@ public class FlattenCommand implements Commandable {
     private void flatten(Environment environment, File directory, Find find) {
         PomReader reader = new PomReader(null);
         for (String file : find.find(directory)) {
-            Artifact artifact = Artifact.parse(new File(directory, file));
+            Artifact artifact;
+            try {
+                artifact = new Artifact(new File(directory, file));
+            } catch (GoException e) {
+                continue;
+            }
             if (artifact != null) {
                 File deps = new File(directory, artifact.getPath("dep"));
                 if (artifact.getPath("pom").equals(file.toString()) && (force || !deps.exists())) {

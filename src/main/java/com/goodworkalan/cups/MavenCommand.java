@@ -11,12 +11,12 @@ import java.util.Set;
 
 import com.goodworkalan.cups.pom.PomReader;
 import com.goodworkalan.go.go.Argument;
-import com.goodworkalan.go.go.Artifact;
-import com.goodworkalan.go.go.Artifacts;
 import com.goodworkalan.go.go.Command;
 import com.goodworkalan.go.go.Commandable;
 import com.goodworkalan.go.go.Environment;
-import com.goodworkalan.go.go.Include;
+import com.goodworkalan.go.go.library.Artifact;
+import com.goodworkalan.go.go.library.Artifacts;
+import com.goodworkalan.go.go.library.Include;
 
 @Command(parent = CupsCommand.class)
 public class MavenCommand implements Commandable {

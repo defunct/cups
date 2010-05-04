@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.goodworkalan.go.go.Artifact;
 import com.goodworkalan.go.go.GoException;
+import com.goodworkalan.go.go.library.Artifact;
 
 public class MavenResolver {
     /** The list of Maven repositories to query. */

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.goodworkalan.go.go.Artifact;
+import com.goodworkalan.go.go.library.Artifact;
 
 class Result {
     public final Artifact artifact;

@@ -1,3 +1,4 @@
 com.goodworkalan.cups.CupsCommand
+com.goodworkalan.cups.GitHubCommand
 com.goodworkalan.cups.FlattenCommand
 com.goodworkalan.cups.MavenCommand

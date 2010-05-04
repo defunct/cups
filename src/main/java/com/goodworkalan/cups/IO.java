@@ -11,10 +11,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.goodworkalan.go.go.Artifact;
+import com.goodworkalan.go.go.library.Artifact;
 
 public class IO {
-    public Map<String, Artifact> read(InputStream in) {
+    public static Map<String, Artifact> read(InputStream in) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         Map<String, Artifact> map = new LinkedHashMap<String, Artifact>();
         String line = null;

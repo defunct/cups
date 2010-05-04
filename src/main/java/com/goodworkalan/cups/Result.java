@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.goodworkalan.go.go.library.Artifact;
 
-class Result {
+public class Result {
     public Artifact artifact;
     
     public char flag;

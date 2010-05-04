@@ -81,7 +81,9 @@ public class CupsInstaller {
         }
         
         String[][] artifacts = new String[][] {
+                new String[] { "cups", "cups", "0.1.1.6" },
                 new String[] { "go-go", "go-go-boot", "0.1.2.5" },
+                new String[] { "go-go", "go-go", "0.1.4.5" },
                 new String[] { "retry", "retry", "0.1" },
                 new String[] { "verbiage", "verbiage", "0.1" },
                 new String[] { "danger", "danger", "0.1" },
@@ -89,12 +91,10 @@ public class CupsInstaller {
                 new String[] { "class-boxer", "class-boxer", "0.1" },
                 new String[] { "class-association", "class-association", "0.1" },
                 new String[] { "infuse", "infuse", "0.1" },
-                new String[] { "go-go", "go-go", "0.1.4.5" },
                 new String[] { "comfort-io", "comfort-io", "0.1.1" },
                 new String[] { "infuse", "infuse", "0.1" },
                 new String[] { "reflective", "reflective", "0.1" },
-                new String[] { "madlib", "madlib", "0.1" },
-                new String[] { "cups", "cups", "0.1.1.5" }
+                new String[] { "madlib", "madlib", "0.1" }
         };
         if (download) {
             HttpURLConnection.setFollowRedirects(true);

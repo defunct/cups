@@ -4,18 +4,15 @@ import com.goodworkalan.mix.ProjectModule;
 import com.goodworkalan.mix.builder.Builder;
 import com.goodworkalan.mix.builder.JavaProject;
 
-public class CupsProject extends ProjectModule {
+public class CupsMavenProject extends ProjectModule {
     @Override
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces("com.github.bigeasy.cups/cups/0.1.1.2")
+                .produces("com.github.bigeasy.cups/cups-maven/0.1.1.2")
                 .main()
                     .depends()
-                        .include("com.github.bigeasy.go-go/go-go/0.1.4.1")
-                        .include("com.github.bigeasy.comfort-io/comfort-io/0.1.1")
-                        .include("com.github.bigeasy.madlib/madlib/0.1")
-                        .include("com.github.bigeasy.danger/danger/0.1")
+                        .include("com.github.bigeasy.cups/cups/0.1.+0")
                         .end()
                     .end()
                 .test()

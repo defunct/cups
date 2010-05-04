@@ -106,6 +106,7 @@ public class MavenCommand implements Commandable {
         MavenResolver resolver = new MavenResolver(library, Collections.<File>emptyList(), uris);
 
         for (Artifact artifact : artifacts) {
+            env.debug("artifact", artifact);
             LinkedList<Result> results = new LinkedList<Result>();
             File found = resolver.find(artifact, "dep");
             if (force || found == null) {

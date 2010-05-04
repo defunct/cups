@@ -29,5 +29,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/danger"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/cups"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

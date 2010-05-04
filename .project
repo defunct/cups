@@ -1,5 +1,5 @@
 <projectDescription>
-  <name>cups</name>
+  <name>cups-maven</name>
   <comment>Repository management for Java.</comment>
   <projects/>
   <buildSpec>

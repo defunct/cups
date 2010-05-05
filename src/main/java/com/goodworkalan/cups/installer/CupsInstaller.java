@@ -81,12 +81,12 @@ public class CupsInstaller {
         }
         
         String[][] artifacts = new String[][] {
-                new String[] { "go-go", "go-go-boot", "0.1.2.8" },
+                new String[] { "go-go", "go-go-boot", "0.1.2.9" },
                 // Jav-a-Go-Go Boot is up top for a reason! 
                 new String[] { "cups", "cups", "0.1.1.10" },
                 new String[] { "go-go", "go-go", "0.1.4.7" },
                 new String[] { "retry", "retry", "0.1" },
-                new String[] { "verbiage", "verbiage", "0.1.0.1" },
+                new String[] { "verbiage", "verbiage", "0.1.0.2" },
                 new String[] { "danger", "danger", "0.1" },
                 new String[] { "github4j", "github4j-downloads", "0.1" },
                 new String[] { "class-boxer", "class-boxer", "0.1" },

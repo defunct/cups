@@ -84,7 +84,7 @@ public class CupsInstaller {
                 new String[] { "go-go", "go-go-boot", "0.1.2.11" },
                 // Jav-a-Go-Go Boot is up top for a reason! 
                 new String[] { "cups", "cups", "0.1.1.11" },
-                new String[] { "go-go", "go-go", "0.1.4.10" },
+                new String[] { "go-go", "go-go", "0.1.4.11" },
                 new String[] { "retry", "retry", "0.1" },
                 new String[] { "ilk", "ilk", "0.1.0.1" },
                 new String[] { "verbiage", "verbiage", "0.1.0.4" },

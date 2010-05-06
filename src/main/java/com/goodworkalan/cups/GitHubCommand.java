@@ -31,13 +31,6 @@ import com.goodworkalan.go.go.version.VersionSelector;
 
 @Command(parent = CupsCommand.class, name = "github")
 public class GitHubCommand implements Commandable {
-    private final List<Artifact> artifacts = new ArrayList<Artifact>();
-    
-    @Argument
-    public void addArtifact(Artifact artifact) {
-        artifacts.add(artifact);
-    }
-    
     @Argument
     public boolean recurse;
     
@@ -133,6 +126,10 @@ public class GitHubCommand implements Commandable {
     }
     
     public void execute(Environment env) {
+        List<Artifact> artifacts = new ArrayList<Artifact>();
+        for (String argument : env.remaining) {
+            artifacts.add(new Artifact(argument));
+        }
         File library = env.library.getDirectories()[0];
         List<Include> current = new ArrayList<Include>();
         for (Artifact artifact : artifacts) {

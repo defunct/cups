@@ -9,7 +9,7 @@ public class CupsProject extends ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces("com.github.bigeasy.cups/cups/0.1.1.10")
+                .produces("com.github.bigeasy.cups/cups/0.1.1.11")
                 .main()
                     .depends()
                         .include("com.github.bigeasy.github4j/github4j-downloads/0.+1")

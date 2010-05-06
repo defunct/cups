@@ -13,6 +13,6 @@ public class GitHubCommandTest {
     public void get() {
         File home = new File(System.getProperty("user.home"));
         File directory = Files.file(home, ".m2", "repository");
-        Go.execute(Collections.singletonList(directory), "cups", "github", "--artifact=com.github.bigeasy.mix/mix/0.+1", "--force", "--recurse");
+        Go.execute(Collections.singletonList(directory), "cups", "github", "--force", "--recurse", "com.github.bigeasy.mix/mix/0.+1");
     }
 }

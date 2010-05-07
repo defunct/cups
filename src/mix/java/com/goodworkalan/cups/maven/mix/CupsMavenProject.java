@@ -9,10 +9,11 @@ public class CupsMavenProject extends ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces("com.github.bigeasy.cups/cups-maven/0.1.1.2")
+                .produces("com.github.bigeasy.cups/cups-maven/0.1.1.3")
                 .main()
                     .depends()
                         .include("com.github.bigeasy.cups/cups/0.1.+0")
+                        .include("com.github.bigeasy.comfort-xml/comfort-xml/0.1.+0")
                         .end()
                     .end()
                 .test()

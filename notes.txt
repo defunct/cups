@@ -1,0 +1,13 @@
+The many problems of POM.
+
+Apparenlty Maven turns off namspaces, since there are many POMs that will not
+parse with namespaces on. I get this error immediately. Someone has cut and
+pasted only part of the project element, negleciting to copy the namespace
+declaration.
+
+The prefix "xsi" for attribute "xsi:schemaLocation" associated with an element
+type "project" is not bound.
+
+There are some POMs that Maven will parse that use HTML entities, so Maven must
+tuck these initites into its compiler somehow.
+

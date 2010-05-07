@@ -50,19 +50,7 @@ public class PomException extends CodedDanger {
      * @param cause
      *            The cause.
      */
-    public PomException(int code) {
-        super(bundles, code, null);
-    }
-
-    /**
-     * Create a cups exception with the given error code and the given cause.
-     * 
-     * @param code
-     *            The error code.
-     * @param cause
-     *            The cause.
-     */
-    public PomException(int code, Throwable cause) {
-        super(bundles, code, cause);
+    public PomException(int code, Object...arguments) {
+        super(bundles, code, null, arguments);
     }
 }

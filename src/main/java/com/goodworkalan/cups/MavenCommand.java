@@ -18,48 +18,60 @@ import com.goodworkalan.go.go.library.Artifact;
 import com.goodworkalan.go.go.library.Artifacts;
 import com.goodworkalan.go.go.library.Include;
 
+// TODO Document.
 @Command(parent = CupsCommand.class)
 public class MavenCommand implements Commandable {
+    // TODO Document.
     /** The list of Maven repositories to query. */
     private final List<URI> uris = new ArrayList<URI>();
     
+    // TODO Document.
     /** The library where new artifacts will be installed */
     private File library;
     
+    // TODO Document.
     /** The list of artifacts to install. */
     private final List<Artifact> artifacts = new ArrayList<Artifact>(); 
     
+    // TODO Document.
     /** Force reinstall. */
     private boolean force;
     
+    // TODO Document.
     /** Recursively search for dependencies. */
     private boolean recurse;
     
+    // TODO Document.
     @Argument
     public void addUri(URI uri) {
         uris.add(uri);
     }
     
+    // TODO Document.
     @Argument
     public void addArtifact(Artifact artifact) {
         artifacts.add(artifact);
     }
     
+    // TODO Document.
     @Argument
     public void addForce(boolean force) {
         this.force = force;
     }
     
+    // TODO Document.
     @Argument
     public void addLibrary(File library) {
         this.library = library;
     }
     
+    // TODO Document.
     @Argument
     public void addRecurse(boolean recurse) {
         this.recurse = recurse;
     }
     
+    // TODO Document.
     private LinkedList<Result> download(MavenResolver resolver, Artifact artifact) {
         LinkedList<Result> results = new LinkedList<Result>();
         PomReader reader = new PomReader(resolver.getLibraries());
@@ -90,6 +102,7 @@ public class MavenCommand implements Commandable {
         return results;
     }
     
+    // TODO Document.
     public void execute(Environment env) {
         if (library == null) {
             if (System.getProperty("user.home") == null) {
@@ -98,9 +111,11 @@ public class MavenCommand implements Commandable {
             File home = new File(System.getProperty("user.home"));
             library = new File(home, ".m2/repository");
         }
-        if (!library.isDirectory() && !library.mkdir()) {
+        if (!library.isDirectory() && !library.mkdirs()) {
             throw new CupsError(MavenCommand.class, "cannot.create.library");
         }
+        System.out.println(System.getProperty("user.dir"));
+        System.out.println(library);
 
         LinkedList<Include> includes = new LinkedList<Include>();
         MavenResolver resolver = new MavenResolver(library, Collections.<File>emptyList(), uris);

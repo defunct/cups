@@ -1,15 +1,8 @@
 package com.goodworkalan.cups.pom;
 
-import static com.goodworkalan.cups.pom.PomException.CANNOT_CREATE_XML_PARSER;
 import static com.goodworkalan.cups.pom.PomException.POM_FILE_NOT_FOUND;
-import static com.goodworkalan.cups.pom.PomException.POM_IO_EXCEPTION;
-import static com.goodworkalan.cups.pom.PomException.POM_SAX_EXCEPTION;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,18 +11,15 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
-
+import com.goodworkalan.comfort.xml.Document;
+import com.goodworkalan.comfort.xml.Element;
+import com.goodworkalan.comfort.xml.Serializer;
 import com.goodworkalan.go.go.library.Artifact;
 import com.goodworkalan.madlib.VariableProperties;
 
 public class PomReader {
+    private final Map<Artifact, Document> documents = new HashMap<Artifact, Document>();
+
     /** The Maven repository directory. */
     private final List<File> libraries;
 
@@ -44,132 +34,39 @@ public class PomReader {
         this.libraries = new ArrayList<File>(libraries);
     }
     
-    public Artifact getParent(final Artifact artifact) {
-        final Artifact[] found = new Artifact[1];
-        ContentHandler handler = new DefaultHandler() {
-            int depth;
-
-            boolean parent;
-            boolean capture;
-            
-            String groupId;
-            String artifactId;
-            String version;
-            
-            StringBuilder characters = new StringBuilder();
-            
-            @Override
-            public void startElement(String uri, String localName, String qName, Attributes attributes)
-            throws SAXException {
-                depth++;
-                if (depth == 2 && localName.equals("parent")) {
-                    parent = true;
-                } else if (depth == 3 && parent) {
-                    capture = true;
-                }
+    void getMetaData(Document document, Properties properties, Map<String, Artifact> dependencies, Set<String> optionals) {
+        Artifact parent = getParent(document);
+        if (parent != null) {
+            getDependencyManagement(parse(parent), parent, dependencies, optionals);
+        }
+        for (Element element : document.elements("/*[local-name() = 'project']/*[local-name() = 'properties']")) {
+            for (Element property : element.elements()) {
+                properties.put(property.getLocalName(), property.getText());
             }
-            
-            @Override
-            public void characters(char[] ch, int start, int length)
-            throws SAXException {
-                if (capture) {
-                    characters.append(ch, start, length);
-                }
-            } 
-            
-            @Override
-            public void endElement(String uri, String localName, String qName)
-            throws SAXException {
-                if (depth == 2 && localName.equals("parent")) {
-                    parent = false;
-                    Artifact parent = new Artifact(groupId, artifactId, version);
-                    groupId = artifactId = version = null;
-                    found[0] = parent;
-                } else if (capture) {
-                    capture = false;
-                    if (localName.equals("groupId")) {
-                        groupId = characters.toString();
-                    } else if (localName.equals("artifactId")) {
-                        artifactId = characters.toString();
-                    } else if (localName.equals("version")) {
-                        version = characters.toString();
-                    }
-                    characters.setLength(0);
-                }
-                depth--;
-            }
-        };
-        parse(artifact, handler);
-        return found[0];
+        }
+    }
+    
+    public Artifact getParent(Artifact artifact) {
+        Document document = parse(artifact);
+        return getParent(document);
     }
 
-    void getMetaData(final Artifact artifact, final Properties properties, final Map<String, Artifact> dependencies, final Set<String> optionals) {
-        ContentHandler handler = new DefaultHandler() {
-            int depth;
-
-            boolean parent;
-            boolean capture;
-            boolean props;
-            
-            String groupId;
-            String artifactId;
-            String version;
-            
-            StringBuilder characters = new StringBuilder();
-            
-            @Override
-            public void startElement(String uri, String localName, String qName, Attributes attributes)
-            throws SAXException {
-                depth++;
-                if (depth == 2 && localName.equals("parent")) {
-                    parent = true;
-                } else if (depth == 3 && parent) {
-                    capture = true;
-                } else if (depth == 2 && localName.equals("properties")) {
-                    props = true;
-                } else if (depth == 3 && props) {
-                    capture = true;
-                }
-            }
-            
-            @Override
-            public void characters(char[] ch, int start, int length)
-            throws SAXException {
-                if (capture) {
-                    characters.append(ch, start, length);
-                }
-            } 
-            
-            @Override
-            public void endElement(String uri, String localName, String qName)
-            throws SAXException {
-                if (depth == 2 && localName.equals("parent")) {
-                    parent = false;
-                    Artifact parent = new Artifact(groupId, artifactId, version);
-                    groupId = artifactId = version = null;
-                    getDependencyManagement(parent, dependencies, optionals);
-                } else if (depth == 2 && localName.equals("properties")) {
-                    props = false;
-                } else if (capture) {
-                    capture = false;
-                    if (localName.equals("groupId")) {
-                        groupId = characters.toString();
-                    } else if (localName.equals("artifactId")) {
-                        artifactId = characters.toString();
-                    } else if (localName.equals("version")) {
-                        version = characters.toString();
-                    } else if (props) {
-                        properties.setProperty(localName, characters.toString());
-                    }
-                    characters.setLength(0);
-                }
-                depth--;
-            }
-        };
-        parse(artifact, handler);
+    private Artifact getParent(Document document) {
+        for (Element element : document.elements("/*[local-name() = 'project']/*[local-name() = 'parent' and *[local-name() = 'artifactId'] and *[local-name() = 'groupId'] and *[local-name() = 'version']]")) {
+            return new Artifact(
+                    element.getText("*[local-name() = 'groupId']"),
+                    element.getText("*[local-name() = 'artifactId']"),
+                    element.getText("*[local-name() = 'version']")
+                    );
+         }
+        return null;
     }
 
-    void parse(final Artifact artifact, ContentHandler handler) {
+    Document parse(final Artifact artifact) {
+        Document document = documents.get(artifact);
+        if (document != null) {
+            return document;
+        }
         File file = null;
         for (File library : libraries) {
             File test = new File(library, artifact.getPath("pom"));
@@ -179,207 +76,76 @@ public class PomReader {
             }
         }
         if (file == null) {
-            throw new PomException(POM_FILE_NOT_FOUND);
+            throw new PomException(POM_FILE_NOT_FOUND, artifact);
         }
-        parse(artifact, file, handler);
-    }
-
-    void parse(final Artifact artifact, File file, ContentHandler handler) {
-        try {
-            try {
-                parse(artifact, handler, new FileInputStream(file));
-            } catch (FileNotFoundException e) {
-                throw new PomException(POM_FILE_NOT_FOUND, e);
-            }
-        } catch (PomException e) {
-            throw e.put("file", file);
-        }
+        Serializer serializer = new Serializer();
+        serializer.setNamespaceAware(false);
+        document = serializer.load(file);
+        documents.put(artifact, document);
+        return document;
     }
     
-    void parse(final Artifact artifact, ContentHandler handler, InputStream in) {
-        try {
-            XMLReader xr;
-            try {
-                xr = XMLReaderFactory.createXMLReader();
-            } catch (SAXException e) {
-                throw new PomException(CANNOT_CREATE_XML_PARSER, e);
-            }
-            xr.setContentHandler(handler);
-            try {
-                xr.parse(new InputSource(in));
-            } catch (IOException e) {
-                throw new PomException(POM_IO_EXCEPTION, e);
-            } catch (SAXException e) {
-                throw new PomException(POM_SAX_EXCEPTION, e);
-            }
-        } catch (PomException e) {
-            throw e.put("artifact", artifact.toString());
-        }
-    }
-    
-    void getDependencyManagement(Artifact artifact, final Map<String, Artifact> dependencies, final Set<String> optionals) {
-        final Properties properties = new Properties();
+    void getDependencyManagement(Document document, Artifact artifact, Map<String, Artifact> dependencies, Set<String> optionals) {
+        Properties properties = new Properties();
         properties.setProperty("project.groupId", artifact.getGroup());
         properties.setProperty("project.artifactId", artifact.getName());
         properties.setProperty("project.version", artifact.getVersion());
-        getMetaData(artifact, properties, dependencies, optionals);
-        final VariableProperties variables = new VariableProperties(properties);
-        ContentHandler handler = new DefaultHandler() {
-            int depth;
-            
-            boolean dependencyManagement;
-            boolean deps;
-            boolean capture;
-            
-            StringBuilder characters = new StringBuilder();
-            
-            String groupId;
-            String artifactId;
-            String version;
-            String scope;
-            String optional;
+        getMetaData(document, properties, dependencies, optionals);
+        VariableProperties variables = new VariableProperties(properties);
+        for (Element element : document.elements("/*[local-name() = 'project']/*[local-name() = 'dependencyManagement']/*[local-name() = 'dependencies']/*[local-name() = 'dependency' and *[local-name() = 'groupId'] and *[local-name() = 'artifactId']]")) {
+            String artifactId = variables.getValue(element.getText("*[local-name() = 'artifactId']"));
+            String version = variables.getValue(element.getText("*[local-name() = 'version']"));
+            String groupId = variables.getValue(element.getText("*[local-name() = 'groupId']"));
+            String scope = variables.getValue(element.getText("*[local-name() = 'scope']"));
+            String optional = variables.getValue(element.getText("*[local-name() = 'optional']"));
+            if (version != null && required(scope, optional)) {
+                dependencies.put(groupId + "/" + artifactId, new Artifact(groupId, artifactId, version));
+            } else if (optional(scope, optional)) {
+                optionals.add(groupId + "/" + artifactId);
+            }
+        }
+    }
 
-            @Override
-            public void startElement(String uri, String localName, String qName, Attributes attributes)
-            throws SAXException {
-                depth++;
-                if (depth == 2 && localName.equals("dependencyManagement")) {
-                    dependencyManagement = true;
-                } else if (depth == 3 && dependencyManagement && localName.equals("dependencies")) {
-                    deps = true;
-                } else if (depth == 5 && deps) {
-                    capture = true;
-                }
-            }
-            
-            @Override
-            public void characters(char[] ch, int start, int length)
-            throws SAXException {
-                if (capture) {
-                    characters.append(ch, start, length);
-                }
-            }
-           
-            @Override
-            public void endElement(String uri, String localName, String qName)
-            throws SAXException {
-                if (depth == 2 && localName.equals("dependencyManagement")) {
-                    dependencyManagement = false;
-                } else if (depth == 3 && dependencyManagement && localName.equals("dependencies")) {
-                    deps = false;
-                } else if (depth == 4 && deps && localName.equals("dependency")) {
-                    if (version != null && (scope == null || scope.equals("compile") || scope.equals("runtime")) && (optional == null || !"true".equals(optional))) {
-                        dependencies.put(groupId + "/" + artifactId, new Artifact(groupId, artifactId, version));
-                    } else if ("test".equals(scope) || "provided".equals(scope) || "true".equals(optional)) {
-                        optionals.add(groupId + "/" + artifactId);
-                    }
-                    optional = scope = version = artifactId = groupId = null;
-                } else if (capture) {
-                    capture = false;
-                    if (localName.equals("groupId")) {
-                        groupId = variables.getValue(characters.toString());
-                    } else if (localName.equals("artifactId")) {
-                        artifactId = variables.getValue(characters.toString());
-                    } else if (localName.equals("version")) {
-                        version = variables.getValue(characters.toString());
-                    } else if (localName.equals("scope")) {
-                        scope = variables.getValue(characters.toString());
-                    } else if (localName.equals("optional")) {
-                        optional = variables.getValue(characters.toString());
-                    }
-                    characters.setLength(0);
-                }
-                depth--;
-            }
-        };
-        parse(artifact, handler);
+    static final boolean optional(String scope, String optional) {
+        return "test".equals(scope) || "provided".equals(scope) || "true".equals(optional);
+    }
+
+    static final boolean required(String scope, String optional) {
+        return (scope == null || scope.equals("compile") || scope.equals("runtime")) && (optional == null || !"true".equals(optional));
     }
     
     public List<Artifact> getImmediateDependencies(Artifact artifact) {
-        final List<Artifact> artifacts = new ArrayList<Artifact>();
-        final Map<String, Artifact> dependencies = new HashMap<String, Artifact>();
-        final Set<String> optionals = new HashSet<String>();
-        final Properties properties = new Properties();
+        List<Artifact> artifacts = new ArrayList<Artifact>();
+        Map<String, Artifact> dependencies = new HashMap<String, Artifact>();
+        Set<String> optionals = new HashSet<String>();
+        Properties properties = new Properties();
         properties.setProperty("project.groupId", artifact.getGroup());
         properties.setProperty("project.artifactId", artifact.getName());
         properties.setProperty("project.version", artifact.getVersion());
         properties.setProperty("groupId", artifact.getGroup());
         properties.setProperty("artifactId", artifact.getName());
         properties.setProperty("version", artifact.getVersion());
-        getMetaData(artifact, properties, dependencies, optionals);
-        getDependencyManagement(artifact, dependencies, optionals);
-        final VariableProperties variables = new VariableProperties(properties);
-        ContentHandler handler = new DefaultHandler() {
-            int depth;
-            
-            boolean deps;
-            boolean dependency;
-            
-            StringBuilder characters = new StringBuilder();
-            
-            String groupId;
-            String artifactId;
-            String version;
-            String scope;
-            String optional;
-
-            @Override
-            public void startElement(String uri, String localName, String qName, Attributes attributes)
-            throws SAXException {
-                depth++;
-                if (depth == 2 && localName.equals("dependencies")) {
-                    deps = true;
-                } else if (deps && depth == 4) {
-                    dependency = true;
-                }
-            }
-            
-            @Override
-            public void characters(char[] ch, int start, int length)
-            throws SAXException {
-                if (dependency) {
-                    characters.append(ch, start, length);
-                }
-            }
-           
-            @Override
-            public void endElement(String uri, String localName, String qName)
-            throws SAXException {
-                if (depth == 2 && localName.equals("dependencies")) {
-                    deps = false;
-                } else if (deps && depth == 3) {
-                    if (groupId != null && artifactId != null) {
-                        if ((scope == null || scope.equals("compile") || scope.equals("runtime")) && (optional == null || !"true".equals(optional))) {
-                            String key = groupId + "/" + artifactId;
-                            if (!optionals.contains(key)) {
-                                Artifact artifact = dependencies.get(key);
-                                if (artifact == null) {
-                                    artifact = new Artifact(groupId, artifactId, version);
-                                }
-                                artifacts.add(artifact);
-                            }
-                        }
+        Document document = parse(artifact);
+        getMetaData(document, properties, dependencies, optionals);
+        getDependencyManagement(document, artifact, dependencies, optionals);
+        VariableProperties variables = new VariableProperties(properties);
+        for (Element element : document.elements("/*[local-name() = 'project']/*[local-name() = 'dependencies']/*[local-name() = 'dependency' and *[local-name() = 'groupId'] and *[local-name() = 'artifactId']]")) {
+            String artifactId = variables.getValue(element.getText("*[local-name() = 'artifactId']"));
+            String version = variables.getValue(element.getText("*[local-name() = 'version']"));
+            String groupId = variables.getValue(element.getText("*[local-name() = 'groupId']"));
+            String scope = variables.getValue(element.getText("*[local-name() = 'scope']"));
+            String optional = variables.getValue(element.getText("*[local-name() = 'optional']"));
+            if (required(scope, optional)) {
+                String key = groupId + "/" + artifactId;
+                if (!optionals.contains(key)) {
+                    Artifact provided = dependencies.get(key);
+                    if (provided == null) {
+                        provided = new Artifact(groupId, artifactId, version);
                     }
-                    optional = scope = version = artifactId = groupId = null;
-                } else if (depth == 4 && dependency) {
-                    dependency = false;
-                    if (localName.equals("groupId")) {
-                        groupId = variables.getValue(characters.toString());
-                    } else if (localName.equals("artifactId")) {
-                        artifactId = variables.getValue(characters.toString());
-                    } else if (localName.equals("version")) {
-                        version = variables.getValue(characters.toString());
-                    } else if (localName.equals("scope")) {
-                        scope = variables.getValue(characters.toString());
-                    } else if (localName.equals("optional")) {
-                        optional = variables.getValue(characters.toString());
-                    }
-                    characters.setLength(0);
+                    artifacts.add(provided);
                 }
-                depth--;
             }
-        };
-        parse(artifact, handler);
+        }
         return artifacts;
     }
 }

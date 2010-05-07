@@ -1,0 +1,6 @@
+<?xml version="1.0"?><project>
+  <parent>
+    <artifactId>broken</artifactId>
+    <groupId>com.broken</groupId>
+  </parent>
+</project>

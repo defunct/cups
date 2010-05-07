@@ -3,6 +3,7 @@ package com.goodworkalan.cups;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import com.goodworkalan.comfort.io.Find;
@@ -20,23 +21,22 @@ import com.goodworkalan.go.go.library.Artifact;
  */
 @Command(parent = CupsCommand.class)
 public class FlattenCommand implements Commandable {
-    private boolean force;
-    
+    /**
+     * Whether or not to force the creation of dependency files if they already
+     * exist.
+     */
     @Argument
-    public void setForce(boolean force) {
-        this.force = force;
-    }
+    public boolean force;
 
     /**
      * Recurse the Maven repository structure converting Maven POM files into
-     * Jav-a-Go-Go dependency files if the Jav-a-Go-Go file does not already
-     * exist.
+     * Jav-a-Go-Go dependency files. Conversions occur if the Jav-a-Go-Go file
+     * does not already exist or if the force argument is true.
      * 
      * @param environment
      *            The execution environment.
      */
     public void execute(Environment environment) {
-        if (force) System.out.println("WILL FORCE!");
         LinkedList<String> args = new LinkedList<String>(environment.remaining);
         String repository = args.removeFirst();
         File directory = new File(repository);
@@ -56,12 +56,13 @@ public class FlattenCommand implements Commandable {
         }
     }
     
+    // TODO Document.
     private void flatten(Environment environment, File directory, Find find) {
-        PomReader reader = new PomReader(null);
+        PomReader reader = new PomReader(Collections.singletonList(directory));
         for (String file : find.find(directory)) {
             Artifact artifact;
             try {
-                artifact = new Artifact(new File(directory, file));
+                artifact = new Artifact(new File(file));
             } catch (GoException e) {
                 continue;
             }
@@ -89,10 +90,10 @@ public class FlattenCommand implements Commandable {
      *            The dependency file.
      */
     void flatten(Environment env, PomReader reader, Artifact artifact, File deps) {
+        System.out.println(artifact);
         try {
             FileWriter writer = new FileWriter(deps);
             for (Artifact dependency : reader.getImmediateDependencies(artifact)) {
-                System.out.println(dependency);
                 writer.write("+ ");
                 writer.write(dependency.getGroup());
                 writer.write(" ");
@@ -104,6 +105,7 @@ public class FlattenCommand implements Commandable {
             writer.close();
         } catch (IOException e) {
             deps.delete();
+            // FIXME Use error bundle.
             env.io.err.println("Unable to flatten POM for artifact " + artifact.toString());
             e.printStackTrace(env.io.err);
         }

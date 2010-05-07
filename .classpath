@@ -2,17 +2,23 @@
 <classpath>
   <classpathentry kind="src" path="src/main/java"/>
   <classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
-  <classpathentry kind="src" path="src/test/java"/>
+  <classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry combineaccessrules="false" kind="src" path="/go-go"/>
   <classpathentry combineaccessrules="false" kind="src" path="/mix"/>
   <classpathentry combineaccessrules="false" kind="src" path="/danger"/>
   <classpathentry combineaccessrules="false" kind="src" path="/cups"/>
+  <classpathentry combineaccessrules="false" kind="src" path="/comfort-xml"/>
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="var" path="M2_REPO/org/testng/testng-jdk15/5.10/testng-jdk15-5.10.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/github/bigeasy/cups/cups/0.1.1.6/cups-0.1.1.6.jar" sourcepath="M2_REPO/com/github/bigeasy/cups/cups/0.1.1.6/cups-0.1.1.6-sources.jar">
     <attributes>
       <attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/cups/cups/0.1.1.6/cups-0.1.1.6-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/com/github/bigeasy/comfort-xml/comfort-xml/0.1/comfort-xml-0.1.jar" sourcepath="M2_REPO/com/github/bigeasy/comfort-xml/comfort-xml/0.1/comfort-xml-0.1-sources.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/comfort-xml/comfort-xml/0.1/comfort-xml-0.1-javadoc.jar!/"/>
     </attributes>
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
@@ -31,9 +37,9 @@
       <attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/comfort-io/comfort-io/0.1.1/comfort-io-0.1.1-javadoc.jar!/"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/com/github/bigeasy/madlib/madlib/0.1/madlib-0.1.jar" sourcepath="M2_REPO/com/github/bigeasy/madlib/madlib/0.1/madlib-0.1-sources.jar">
+  <classpathentry kind="var" path="M2_REPO/com/github/bigeasy/madlib/madlib/0.1.0.1/madlib-0.1.0.1.jar" sourcepath="M2_REPO/com/github/bigeasy/madlib/madlib/0.1.0.1/madlib-0.1.0.1-sources.jar">
     <attributes>
-      <attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/madlib/madlib/0.1/madlib-0.1-javadoc.jar!/"/>
+      <attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/madlib/madlib/0.1.0.1/madlib-0.1.0.1-javadoc.jar!/"/>
     </attributes>
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/com/github/bigeasy/danger/danger/0.1.0.1/danger-0.1.0.1.jar" sourcepath="M2_REPO/com/github/bigeasy/danger/danger/0.1.0.1/danger-0.1.0.1-sources.jar">
@@ -66,7 +72,11 @@
       <attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/infuse/infuse/0.1/infuse-0.1-javadoc.jar!/"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/com/github/bigeasy/verbiage/verbiage/0.1.0.4/verbiage-0.1.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/github/bigeasy/verbiage/verbiage/0.1.0.4/verbiage-0.1.0.4.jar" sourcepath="M2_REPO/com/github/bigeasy/verbiage/verbiage/0.1.0.4/verbiage-0.1.0.4-sources.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/verbiage/verbiage/0.1.0.4/verbiage-0.1.0.4-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/com/github/bigeasy/class-association/class-association/0.1/class-association-0.1.jar" sourcepath="M2_REPO/com/github/bigeasy/class-association/class-association/0.1/class-association-0.1-sources.jar">
     <attributes>
       <attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/class-association/class-association/0.1/class-association-0.1-javadoc.jar!/"/>

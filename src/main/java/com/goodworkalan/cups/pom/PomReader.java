@@ -17,6 +17,24 @@ import com.goodworkalan.comfort.xml.Serializer;
 import com.goodworkalan.go.go.library.Artifact;
 import com.goodworkalan.madlib.VariableProperties;
 
+/**
+ * Read a POM and extract only the immediate, production dependencies.
+ * <p>
+ * Note that you once made an attempt to extract this to its own package, but
+ * once you've replaced {@link Artifact} with a string list and look at it
+ * again, it is apparent that this class has a very specific purpose, to extract
+ * dependencies for the sake of Cups.
+ * <p>
+ * Anyone who would stumble upon a POM reader is probably not trying to strip
+ * and discard POM, the way that Cups seeks to strip and discard POM. They'll be
+ * interested in the different dependency scopes, the classifiers, the project
+ * license, the committer names and their email addresses and their family vacation
+ * photographs and everything else that makes POM so special.
+ * <p> 
+ * This class is only interested in the produciton dependencies.
+ * 
+ * @author Alan Gutierrez
+ */
 public class PomReader {
     private final Map<Artifact, Document> documents = new HashMap<Artifact, Document>();
 

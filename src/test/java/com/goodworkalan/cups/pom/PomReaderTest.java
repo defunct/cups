@@ -1,11 +1,12 @@
 package com.goodworkalan.cups.pom;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 
 import org.testng.annotations.Test;
@@ -29,7 +30,7 @@ public class PomReaderTest {
     }
 
     private PomReader getPomReader() {
-        PomReader poms = new PomReader(Collections.singletonList(new File("src/test/poms").getAbsoluteFile()));
+        PomReader poms = new PomReader(new File("src/test/poms").getAbsoluteFile());
         return poms;
     }
     

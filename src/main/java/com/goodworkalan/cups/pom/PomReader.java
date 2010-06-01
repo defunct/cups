@@ -39,17 +39,17 @@ public class PomReader {
     private final Map<Artifact, Document> documents = new HashMap<Artifact, Document>();
 
     /** The Maven repository directory. */
-    private final List<File> libraries;
+    private final File library;
 
     /**
-     * Create a POM reader that reads Maven POMs from the given Maven repository
-     * directory.
+     * Create a POM reader that reads Maven POMs from the Maven located in the
+     * given library directory.
      * 
-     * @param resolver
-     *            The Maven POM resolver.
+     * @param library
+     *            The library directory.
      */
-    public PomReader(List<File> libraries) {
-        this.libraries = new ArrayList<File>(libraries);
+    public PomReader(File library) {
+        this.library = library;
     }
     
     void getMetaData(Document document, Properties properties, Map<String, Artifact> dependencies, Set<String> optionals) {
@@ -76,7 +76,7 @@ public class PomReader {
                     element.getText("*[local-name() = 'artifactId']"),
                     element.getText("*[local-name() = 'version']")
                     );
-         }
+        }
         return null;
     }
 
@@ -85,15 +85,8 @@ public class PomReader {
         if (document != null) {
             return document;
         }
-        File file = null;
-        for (File library : libraries) {
-            File test = new File(library, artifact.getPath("pom"));
-            if (test.exists()) {
-                file = test;
-                break;
-            }
-        }
-        if (file == null) {
+        File file = new File(library, artifact.getPath("pom"));
+        if (!file.exists()) {
             throw new PomException(POM_FILE_NOT_FOUND, artifact);
         }
         Serializer serializer = new Serializer();

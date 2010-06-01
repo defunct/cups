@@ -17,7 +17,7 @@ public class FlattenCommandTest {
         Find find = new Find().include("**/*.dep");
         File poms = new File("src/test/poms");
         for (String fileName : find.find(poms)) {
-            Files.delete(new File(poms, fileName));
+            Files.unlink(new File(poms, fileName));
         }
         File home = new File(System.getProperty("user.home"));
         File directory = file(home, ".m2", "repository");

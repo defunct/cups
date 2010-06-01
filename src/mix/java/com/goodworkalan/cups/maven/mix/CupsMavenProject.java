@@ -19,7 +19,7 @@ public class CupsMavenProject implements ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces("com.github.bigeasy.cups/cups-maven/0.1.1.4")
+                .produces("com.github.bigeasy.cups/cups-maven/0.1.1.6")
                 .depends()
                     .production("com.github.bigeasy.cups/cups/0.1.+0")
                     .production("com.github.bigeasy.madlib/madlib/0.+1")

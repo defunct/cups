@@ -3,7 +3,6 @@ package com.goodworkalan.cups;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.LinkedList;
 
 import com.goodworkalan.comfort.io.Find;
@@ -58,7 +57,7 @@ public class FlattenCommand implements Commandable {
     
     // TODO Document.
     private void flatten(Environment environment, File directory, Find find) {
-        PomReader reader = new PomReader(Collections.singletonList(directory));
+        PomReader reader = new PomReader(directory);
         for (String file : find.find(directory)) {
             Artifact artifact;
             try {

@@ -1,0 +1,33 @@
+diff -rupN oldhtml/src/main/java/com/habitsoft/xhtml/dtds/FailingEntityResolver.java remixed/src/main/java/com/habitsoft/xhtml/dtds/FailingEntityResolver.java
+--- oldhtml/src/main/java/com/habitsoft/xhtml/dtds/FailingEntityResolver.java	2010-05-16 01:06:20.000000000 -0500
++++ remixed/src/main/java/com/habitsoft/xhtml/dtds/FailingEntityResolver.java	2010-05-16 01:08:04.000000000 -0500
+@@ -8,7 +8,6 @@ import org.xml.sax.SAXException;
+ 
+ public class FailingEntityResolver implements EntityResolver {
+ 
+-    @Override
+     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+         throw new IllegalStateException("Entity should have been resolved from the cache: "+systemId);
+     }
+diff -rupN oldhtml/src/main/java/com/habitsoft/xhtml/dtds/SuppressingEntityResolver.java remixed/src/main/java/com/habitsoft/xhtml/dtds/SuppressingEntityResolver.java
+--- oldhtml/src/main/java/com/habitsoft/xhtml/dtds/SuppressingEntityResolver.java	2010-05-16 01:06:20.000000000 -0500
++++ remixed/src/main/java/com/habitsoft/xhtml/dtds/SuppressingEntityResolver.java	2010-05-16 01:08:07.000000000 -0500
+@@ -11,7 +11,6 @@ public class SuppressingEntityResolver i
+     public SuppressingEntityResolver() {
+     }
+ 
+-    @Override
+     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+         return new InputSource(new StringReader(""));
+     }
+diff -rupN oldhtml/src/main/java/com/habitsoft/xhtml/dtds/XhtmlEntityResolver.java remixed/src/main/java/com/habitsoft/xhtml/dtds/XhtmlEntityResolver.java
+--- oldhtml/src/main/java/com/habitsoft/xhtml/dtds/XhtmlEntityResolver.java	2010-05-16 01:06:20.000000000 -0500
++++ remixed/src/main/java/com/habitsoft/xhtml/dtds/XhtmlEntityResolver.java	2010-05-16 01:08:14.000000000 -0500
+@@ -19,7 +19,6 @@ public class XhtmlEntityResolver impleme
+         this(null);
+     }
+ 
+-    @Override
+     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+         if(systemId.startsWith(XHTML_PREFIX)) {
+             String name = systemId.substring(XHTML_PREFIX.length());

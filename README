@@ -1,0 +1,10 @@
+CUPS REMIX
+
+Install Cups dependencies from source using Mix.
+
+    Source: http://github.com/bigeasy/cups/tree/remix
+    Documentation: http://wiki.github.com/bigeasy/cups
+
+    Issues: http://bigeasy.lighthouseapp.com/projects/44218
+
+    Contact: alan@blogometer.com

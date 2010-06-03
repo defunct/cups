@@ -258,7 +258,7 @@ public class MavenCommand implements Commandable {
         Artifact current = destination;
         Artifact parent = reader.getParent(current);
         if (parent != null) {
-            results.addAll(download(parent, parent, ""));
+            results.addAll(download(parent, parent, null));
             if (results.getLast().flag == '!') {
                 return results;
             }

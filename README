@@ -1,0 +1,10 @@
+CUPS MAVEN
+
+Install Cups dependencies from Maven repositories.
+
+    Source: http://github.com/bigeasy/cups/tree/maven
+    Documentation: http://wiki.github.com/bigeasy/cups
+
+    Issues: http://bigeasy.lighthouseapp.com/projects/44218
+
+    Contact: alan@blogometer.com

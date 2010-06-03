@@ -1,14 +1,18 @@
 package com.goodworkalan.cups.installer;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class CupsInstaller {
@@ -31,12 +35,15 @@ public class CupsInstaller {
     }
 
     private static boolean fetch(File full, String[] artifact, String suffix) throws IOException {
+        String login = artifact[0].split("\\.")[2];
+        String group = artifact[0].split("\\.")[3];
         URL url = null;
         try {
-            url = new URL("http://github.com/downloads/bigeasy/" + artifact[0] + "/" + artifact[1] + "-" + artifact[2] + "." + suffix);
+            url = new URL("http://github.com/downloads/" + login + "/" + group + "/" + artifact[1] + "-" + artifact[2] + "." + suffix);
         } catch (MalformedURLException e) {
             // Never happens.
         }
+        System.out.println(url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
             InputStream in = connection.getInputStream();
@@ -80,28 +87,26 @@ public class CupsInstaller {
             boot = download = true;
         }
         
-        String[][] artifacts = new String[][] {
-                new String[] { "go-go", "go-go-boot", "0.1.2.11" },
-                // Jav-a-Go-Go Boot is up top for a reason! 
-                new String[] { "cups", "cups", "0.1.1.11" },
-                new String[] { "go-go", "go-go", "0.1.4.11" },
-                new String[] { "retry", "retry", "0.1" },
-                new String[] { "ilk", "ilk", "0.1.0.1" },
-                new String[] { "verbiage", "verbiage", "0.1.0.4" },
-                new String[] { "danger", "danger", "0.1.0.1" },
-                new String[] { "github4j", "github4j-downloads", "0.1" },
-                new String[] { "class-boxer", "class-boxer", "0.1" },
-                new String[] { "class-association", "class-association", "0.1" },
-                new String[] { "infuse", "infuse", "0.1" },
-                new String[] { "comfort-io", "comfort-io", "0.1.1" },
-                new String[] { "infuse", "infuse", "0.1" },
-                new String[] { "reflective", "reflective", "0.1" },
-                new String[] { "madlib", "madlib", "0.1" }
-        };
+        // Here's a list of the bootstrap dependencies for Jav-a-Go-Go.
+        BufferedReader reader = new BufferedReader(new InputStreamReader(CupsInstaller.class.getResourceAsStream("dependencies.txt")));
+
+        List<String> lines = new ArrayList<String>();
+        // Locate them and create a list of URIs.
+        String line;
+        while ((line = reader.readLine()) != null) {
+            lines.add(line);
+        }
+        
+        String[][] artifacts = new String[lines.size()][];
+        for (int i = 0, stop = artifacts.length; i < stop; i++) {
+            artifacts[i] = lines.get(i).split("/");
+        }
+
         if (download) {
             HttpURLConnection.setFollowRedirects(true);
             for (String[] artifact :artifacts) {
-                File directory = file(library, "com", "github", "bigeasy", artifact[0], artifact[1], artifact[2]);
+                String group = artifact[0].replace(".", File.separator);
+                File directory = file(library, group, artifact[1], artifact[2]);
                 if (!(directory.isDirectory() || directory.mkdirs())) {
                     throw new IOException("Cannot create directory: " + directory);
                 }
@@ -116,7 +121,12 @@ public class CupsInstaller {
             }
         }
         if (boot) {
-            String[] gogoBoot = artifacts[0];
+            String[] gogoBoot = null;
+            for (int i = 0, stop = artifacts.length; i < stop && gogoBoot == null; i++) {
+                if (artifacts[i][1].equals("go-go-boot")) {
+                    gogoBoot = artifacts[i];
+                }
+            }
             StringTokenizer tokenizer = new StringTokenizer(System.getProperty("java.ext.dirs"), File.pathSeparator);
             boolean written = false;
             while (tokenizer.hasMoreElements()) {
@@ -132,7 +142,8 @@ public class CupsInstaller {
                 if (!written && dir.canWrite()) {
                     System.out.println("Installing " + file(dir, "go-go-boot-" + gogoBoot[2] + ".jar").getAbsolutePath() + ".");
                     written = true;
-                    InputStream in = new FileInputStream(file(library, "com", "github", "bigeasy", "go-go", "go-go-boot", gogoBoot[2], "go-go-boot-" + gogoBoot[2] + ".jar"));
+                    String group = gogoBoot[0].replace(".", File.separator);
+                    InputStream in = new FileInputStream(file(library, group, "go-go-boot", gogoBoot[2], "go-go-boot-" + gogoBoot[2] + ".jar"));
     
                     OutputStream out = new FileOutputStream(file(dir, "go-go-boot-" + gogoBoot[2] + ".jar"));
                     byte[] buffer = new byte[4092];

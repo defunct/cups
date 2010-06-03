@@ -59,7 +59,7 @@ public class PomReader {
         }
         for (Element element : document.elements("/*[local-name() = 'project']/*[local-name() = 'properties']")) {
             for (Element property : element.elements()) {
-                properties.put(property.getLocalName(), property.getText());
+                properties.put(property.getLocalName(), property.getTextContent());
             }
         }
     }

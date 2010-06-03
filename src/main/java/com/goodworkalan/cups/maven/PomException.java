@@ -1,4 +1,4 @@
-package com.goodworkalan.cups.pom;
+package com.goodworkalan.cups.maven;
 
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;

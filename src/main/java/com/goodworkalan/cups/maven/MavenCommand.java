@@ -1,4 +1,4 @@
-package com.goodworkalan.cups;
+package com.goodworkalan.cups.maven;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,7 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.goodworkalan.cups.pom.PomReader;
+import com.goodworkalan.cups.CupsCommand;
+import com.goodworkalan.cups.CupsError;
+import com.goodworkalan.cups.IO;
+import com.goodworkalan.cups.Result;
 import com.goodworkalan.go.go.Argument;
 import com.goodworkalan.go.go.Command;
 import com.goodworkalan.go.go.Commandable;
@@ -300,7 +303,7 @@ public class MavenCommand implements Commandable {
             // classified Maven artifact string into a three part Jav-a-Go-Go
             // artifact string, where the classifier is folded into the 
 
-            String classifier = "";
+            String classifier = null;
             String[] split;
             if ((split = pattern.split("/")).length == 4) {
                 classifier = split[3];
@@ -308,7 +311,7 @@ public class MavenCommand implements Commandable {
             }
             Artifact source = new Artifact(pattern);
             Artifact destination;
-            if (classifier.equals("")) {
+            if (classifier == null) {
                 destination = source;
             } else {
                 destination = new Artifact(source.getGroup(), source.getName() + "-" + classifier, source.getVersion()); 
@@ -339,7 +342,7 @@ public class MavenCommand implements Commandable {
             LinkedList<Result> results = new LinkedList<Result>();
             if (! new File(library, artifact.getPath("jar")).exists()) {
                 if (recurse) {
-                    results.addAll(download(artifact, artifact, ""));
+                    results.addAll(download(artifact, artifact, null));
                 } else {
                     results.add(new Result('!', artifact));
                 }

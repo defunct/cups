@@ -1,3 +1,2 @@
-com.goodworkalan.cups.CupsCommand
-com.goodworkalan.cups.FlattenCommand
-com.goodworkalan.cups.MavenCommand
+com.goodworkalan.cups.maven.FlattenCommand
+com.goodworkalan.cups.maven.MavenCommand

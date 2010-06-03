@@ -1,4 +1,4 @@
-package com.goodworkalan.cups;
+package com.goodworkalan.cups.maven;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import com.goodworkalan.comfort.io.Find;
-import com.goodworkalan.cups.pom.PomReader;
+import com.goodworkalan.cups.CupsCommand;
 import com.goodworkalan.go.go.Argument;
 import com.goodworkalan.go.go.Command;
 import com.goodworkalan.go.go.Commandable;

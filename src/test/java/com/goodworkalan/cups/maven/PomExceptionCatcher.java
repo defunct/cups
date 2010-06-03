@@ -1,7 +1,9 @@
-package com.goodworkalan.cups.pom;
+package com.goodworkalan.cups.maven;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
+
+import com.goodworkalan.cups.maven.PomException;
 
 public class PomExceptionCatcher {
     private final int code;

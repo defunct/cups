@@ -1,4 +1,4 @@
-package com.goodworkalan.cups;
+package com.goodworkalan.cups.maven;
 
 import static com.goodworkalan.comfort.io.Files.file;
 

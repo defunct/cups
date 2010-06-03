@@ -1,6 +1,6 @@
-package com.goodworkalan.cups.pom;
+package com.goodworkalan.cups.maven;
 
-import static com.goodworkalan.cups.pom.PomException.POM_FILE_NOT_FOUND;
+import static com.goodworkalan.cups.maven.PomException.POM_FILE_NOT_FOUND;
 
 import java.io.File;
 import java.util.ArrayList;

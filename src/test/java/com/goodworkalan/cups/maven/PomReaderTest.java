@@ -1,4 +1,4 @@
-package com.goodworkalan.cups.pom;
+package com.goodworkalan.cups.maven;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
+import com.goodworkalan.cups.maven.PomException;
+import com.goodworkalan.cups.maven.PomReader;
 import com.goodworkalan.go.go.library.Artifact;
 
 public class PomReaderTest {

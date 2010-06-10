@@ -2,7 +2,7 @@ package com.goodworkalan.mix.cups;
 
 import com.goodworkalan.mix.ProjectModule;
 import com.goodworkalan.mix.builder.Builder;
-import com.goodworkalan.mix.builder.JavaProject;
+import com.goodworkalan.mix.cookbook.JavaProject;
 
 /**
  * Builds the project definition for Cups Maven.

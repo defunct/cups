@@ -7,7 +7,7 @@ import com.goodworkalan.go.go.Commandable;
 import com.goodworkalan.go.go.Environment;
 import com.goodworkalan.mix.ProjectModule;
 import com.goodworkalan.mix.builder.Builder;
-import com.goodworkalan.mix.builder.JavaProject;
+import com.goodworkalan.mix.cookbook.JavaProject;
 import com.goodworkalan.spawn.Spawn;
 
 public class HtmlDtdCacheFormula implements Commandable, ProjectModule {

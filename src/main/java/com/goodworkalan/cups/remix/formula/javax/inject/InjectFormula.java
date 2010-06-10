@@ -1,12 +1,13 @@
 package com.goodworkalan.cups.remix.formula.javax.inject;
 
-import static com.goodworkalan.comfort.io.Files.*;
+import static com.goodworkalan.comfort.io.Files.file;
+
 import com.goodworkalan.cups.remix.Sandbox;
 import com.goodworkalan.go.go.Commandable;
 import com.goodworkalan.go.go.Environment;
 import com.goodworkalan.mix.ProjectModule;
 import com.goodworkalan.mix.builder.Builder;
-import com.goodworkalan.mix.builder.JavaProject;
+import com.goodworkalan.mix.cookbook.JavaProject;
 import com.goodworkalan.spawn.Spawn;
 
 public class InjectFormula implements Commandable, ProjectModule {

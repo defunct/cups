@@ -8,9 +8,9 @@ import com.goodworkalan.go.go.library.PathPart;
 import com.goodworkalan.mix.Mix;
 import com.goodworkalan.mix.Project;
 import com.goodworkalan.mix.ProjectModule;
-import com.goodworkalan.mix.builder.Executable;
+import com.goodworkalan.go.go.Commandable;
 import com.goodworkalan.mix.builder.Builder;
-import com.goodworkalan.mix.builder.JavaProject;
+import com.goodworkalan.mix.cookbook.JavaProject;
 import com.goodworkalan.comfort.io.Files;
 import java.util.Collections;
 import java.util.TreeSet;
@@ -40,7 +40,7 @@ public class CupsInstallerProject implements ProjectModule {
             .end();
         builder
             .recipe("dependencies")
-                .executable(new Executable() {
+                .executable(new Commandable() {
                     public void execute(Environment env) {
                         Set<String> artifacts = new TreeSet<String>();
                         for (String pattern : new String[] { 

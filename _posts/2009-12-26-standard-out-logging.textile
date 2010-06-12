@@ -1,0 +1,108 @@
+---
+layout: default
+title: Standard Error Logging
+---
+
+h1. {{ page.title }}
+
+p(meta). December 26th, 2009
+
+Logging got added to Jav-a-Go-Go quite by accident. Now I need to remove it.
+
+I created a little library some time ago, called Cassandra, which contained an exception class that was a simple, formatted exception. The @CassandraException@ class has a put method that could be chained, so you can add name value pairs to a hash, then reference those name value pairs in a message format string kept in a @ResourceBundle@. Cassandra encourages me to write meaningful exception messages, because littering my code with string constants discourages me from writing meaningful exception messages.
+
+Cassandra's message formatting got adopted by my Prattle structured logging library, so Cassandra adopted the notion of structured error messages. A structure message is a message that can contain a tree of Java maps, lists and primitives. The structured message can be recored as YAML, JSON or XML and read by log viewers, alert systems, in Java or in any language, since the types are not Java specific. 
+
+This created a @Notice@ base class to create these structured messages. Cassandra used this @Notice@ and pulled in a @Sink@ class that runs a thread that feeds notices to recorders. The recorders can create YAML or JSON based logs, send email, etc.
+
+The recorders are pluggable. There's the problem. I'm already doing all sorts of @ClassLoader@ tom foolery because Jav-a-Go-Go is all about bootstrapping Java command line programs. Add more @ClassLoader@ jiggery-pokery to load recorders and you are going to go the path of Jarkarta Commons Logging and spew obscure exceptions that no one can understand. Jav-a-Go-Go is going to get a reputation.
+
+Gave at few days of thought. Thought a lot of things. Read through Ceki Gülcü's "Taxonomy of class loader problems encountered when using Jakarta Commons Logging":http://articles.qos.ch/classloader.html and decided that Notice can have a healthy life. Notice is like Jakarta Commons Logging, because it doesn't act as a bridge. I've read Hani Suliman's rants about logging and the logging fetish years, as well as his uninformed attack on SLF4J (nee Ugli), and figured that the logging implementation for Notice would work find in a web container, it would work fine as a crash reporting tool for a stand-alone application, but it won't work for Mix.
+
+First, you need to configure logging, which means configuring recorders, configuring the logging system that Notice defers to for levels management, pull in SLF4J. You are pulling in a lot of framework for logging, when Jav-a-Go-Go programs are supposed to live short, productive lives on the command line. You want verbose output or debug output, you don't want to build a logging configuration, you simply want to flip a switch. A logging framework would make Jav-a-Go-Go smell like a container.
+
+While Notice works as a crash reporter for a stand-alone application. It can work in an application server, or in an application contained by an application server. I can't see it working in Jav-a-Go-Go, because an invocation of a Jav-a-Go-Go program is atomic for the user, even if the Jav-a-Go-Go program takes advantage of the @ClassLoader@ pseudo-fork trickery to fire off other Jav-a-Go-Go commands in their own thread, with their own @ClassLoader@. Their would have to be a way to configure recorders for the application that could be used by all of the threads. Otherwise, each invocation would configure appenders and recorders, creating a dozens of log files, or stomping all over the same log file.
+
+Also, the primacy of logging leans us toward the notion of logorrheic command line applications that have to tell you all about every little thing they do.
+
+The idea now is to pull out my nifty exception class with its nice formatted messages, and to let the application define its own exceptions, not have a common exception handling mechanism. I'll probably add an interface called @Erronious@ that will allow an error message to specify an error code. If there is such an error code, the exception will be considered an ordinary error exit and the stack trace will be suppressed.
+
+We then use good old standard error as the one true error log. The @InputOutput@ class will get a couple of methods to help create formatted error messages. Maybe a flavor of that formatted error message I developed for Cassandra and Notice, where you can put named variables and create formatted messages in a properties file, because I really hate string constants with English sentences all over my code.
+
+The one nice thing to add to the formatting could be the ability to add an indent, to allow rich formatting by virtue of indenting the output.
+
+Also, one might want to provide the user with a nice way to create a little command line progress bar. Some command line programs do like to show a download, which is reasonable.
+
+Standard out is reserved for program output. Structured data that can be fed to other command line tools. Not for messages. When you add verbose or debug, blather goes to standard out, because you can get a meaningful error from the exit code, you don't need to parse standard out to know how the program ended.
+
+Here is what I came up with. Every command takes a @verbose@ argument.
+
+@java go.go mix --verbose make clean@
+
+Here, the @MixCommand@ class does not specify an @addVerbose@ method, because verbose is a property of the @CommandPart@. Every command has a @verbose@ switch.
+
+If someone complains bitterly at some point, saying that they need verbose for some other purpose, then we can make the verbosity switch configurable use the @@Command@ annotation as in @@Command(verbose = "debgging")@. However, verbose is such a standard, we will hopefully never cross the bridge to the land of great surprises. We will document the @verbose@ argument as a convention and state an opinion.
+
+At first I had @verbose@ and @debug@ to have levels, but it occurred to me that I was two steps down the path of eating up the user namespace, instead of one. If I could have one special case, reserved argument that did one very useful thing, then no one will complain about the encroachment, but two bites out of the name space for a lonely feature looks like a sloppy design.
+
+So, lets reuse @verbose@ to indicate debugging. Each time verbose appears on the command line, it increases the verbosity of the command.
+
+@java go.go mix --verbose --verbose make clean@
+
+The maximum verbosity is inherited. In the command below @mix@ and @make@ are implemented as @Commandable@ while @clean@ is an argument passed to @make@. Make will inherit a verbosity of @2@ from the mix command, and will emit debugging output, even though it's verbosity is @1@.
+
+@java go.go mix --verbose --verbose make --verbose clean@
+
+In the command below the @mix@ command will have a verbosity of @1@ and the @make@ command will have a verbosity of @2@.
+
+@java go.go mix --verbose make --verbose --verbose clean@
+
+How do you get to the verbosity?
+
+<pre name="code" class="foo">
+package com.goodworkalan.mix;
+
+public  class MakeCommand implements Commandable {
+	private Mix.Configuration configuration;
+	
+	public void setConfiguration(Mix.Configuration configuration) {
+		this.configuration = configuration;
+	}
+	
+    public void execute(Environment env) {
+		env.verbose("start", env.getRemaining());
+		for (String target : env.getRemaining()) {
+			env.verbose("build", target);
+			for (Task task : configuration.getProject().getRecipe(target)) {
+				env.debug("task", task.getClass().getCannonicalName());
+				task.execute(env);
+			}
+		}
+    }
+} 
+</pre>
+
+The messages above are written to standard out. They are read from a properties file named @stderr.properties@. The file is found in the same package as the command task class. In this case @com.goodworkalan.mix.stderr.properties@. Inside that file we put sprintf format strings.
+
+<pre>
+MakeCommand/start: Command [mix make] invoked with targets %s.
+MakeCommnad/build: \    Building target [%s].
+MakeCommnad/task:  \        Running a task of type [%s].
+</pre>
+
+Now when we run our command...
+
+<pre>java go.go mix --verbose make clean
+Command [mix make] invoked with targets [clean].
+    Building target[clean]
+</pre>
+
+Because we didn't type @--verbose@ twice, we don't see the debug output, only the verbose output.
+
+If you want to use a different context for the debugging output there, specify a specific @Class@ as the context.
+
+@env.debug(Javac.class, "compiling", sources)@
+
+Here the @Javac@ class is not a Jav-a-Go-Go command but a Mix task, part of a recipe to build a program. A @Javac@ class can have messages in @stderr.properties@, we just need pass the @Class@ to the @debug@ or @verbose@ method.
+
+That is logging for Jav-a-Go-Go.

@@ -1,0 +1,10 @@
+---
+layout: default
+title: Pseudo Fork
+---
+
+h1. {{ page.title }}
+
+p(meta). December 27th, 2009
+
+When you last left off, you were working on pseudo-fork and siblings in Mix. So, you remember, the next thing you need to do is to find a away to allow Mix to add arguments at run time. If you don't, then everyone is going to define Java system properties and it will be Ant and Maven all over again.

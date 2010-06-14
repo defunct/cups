@@ -17,32 +17,16 @@ public class MavenCommandTest {
         File directory = file(home, ".m2", "repository");
         Files.unlink(new File("target/test/library"));
         Go.execute(Collections.singletonList(directory), 
-            "cups", "maven",
-            "--library=target/test/library",
-            "--uri=http://repo2.maven.org/maven2/",
-            "--recurse",
-            "org.slf4j/slf4j-api/1.4.2"
+            "cups", "install", "--library=target/test/library", "--recursive", "org.slf4j/slf4j-api/1.4.2"
             );
         Go.execute(Collections.singletonList(directory), 
-            "cups", "maven",
-            "--library=target/test/library",
-            "--uri=http://repo2.maven.org/maven2/",
-            "--recurse",
-            "org.testng/testng/5.10/jdk15"
+            "cups", "install", "--library=target/test/library", "--recursive", "org.testng/testng-jdk15/5.10"
             );
         Go.execute(Collections.singletonList(directory), 
-            "cups", "maven",
-            "--library=target/test/library",
-            "--uri=http://repo2.maven.org/maven2/",
-            "--recurse",
-            "org.testng/testng/5.10/jdk15"
+            "cups", "install", "--library=target/test/library", "--recursive", "org.testng/testng-jdk15/5.10"
             );
         Go.execute(Collections.singletonList(directory), 
-            "cups", "maven",
-            "--library=target/test/library",
-            "--uri=http://repo2.maven.org/maven2/",
-            "--force",
-            "org.testng/testng/5.10/jdk15"
+            "cups", "install", "--library=target/test/library", "--recursive", "--force", "org.testng/testng-jdk15/5.10"
             );
     }
 }

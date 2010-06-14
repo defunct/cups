@@ -8,12 +8,13 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Properties;
 
 import com.goodworkalan.cups.CupsCommand;
 import com.goodworkalan.cups.CupsError;
@@ -27,6 +28,7 @@ import com.goodworkalan.go.go.GoException;
 import com.goodworkalan.go.go.library.Artifact;
 import com.goodworkalan.go.go.library.Artifacts;
 import com.goodworkalan.go.go.library.Include;
+import com.goodworkalan.ilk.Ilk;
 
 /**
  * Download an artifact form a Maven repository.
@@ -69,10 +71,10 @@ public class MavenCommand implements Commandable {
     @Argument
     public boolean force;
     
-    /** Recursively search for dependencies. */
+    /** Show build dependencies (always empty for Maven). */
     @Argument
-    public boolean recurse;
-
+    public boolean buildDependencies;
+    
     /**
      * Add a URI to the list of Maven repositories to search.
      * 
@@ -275,6 +277,14 @@ public class MavenCommand implements Commandable {
         }
         return results;
     }
+    
+    public void execute(Environment env) {
+    	if (buildDependencies) {
+            env.output(new Ilk<List<Include>>() {}, Collections.<Include>emptyList());
+    	} else {
+    		install(env);
+    	}
+    }
 
     /**
      * Download the artifacts given on the command line.
@@ -282,7 +292,7 @@ public class MavenCommand implements Commandable {
      * @param env
      *            The environment.
      */
-    public void execute(Environment env) {
+    public void install(Environment env) {
         if (library == null) {
             if (System.getProperty("user.home") == null) {
                 throw new CupsError(MavenCommand.class, "no.user.home");
@@ -294,10 +304,19 @@ public class MavenCommand implements Commandable {
             throw new CupsError(MavenCommand.class, "cannot.create.library");
         }
 
+        Properties classified;
+		try {
+			classified = getClassified();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+        
         LinkedList<Include> includes = new LinkedList<Include>();
 
         for (String pattern : env.remaining) {
             env.debug("artifact", pattern);
+            
+            pattern = classified.getProperty(pattern, pattern);
 
             // If the artifact pattern has four parts, Convert a four part,
             // classified Maven artifact string into a three part Jav-a-Go-Go
@@ -326,37 +345,27 @@ public class MavenCommand implements Commandable {
                 if (result.flag != '!') {
                     includes.addAll(Artifacts.read(new File(library, result.artifact.getPath("dep"))));
                 }
-                result.print(env.io.out);
+                env.io.out.println(result);
             }
             env.io.out.flush();
         }
-        
-        Set<Artifact> seen = new HashSet<Artifact>();
-        while (!includes.isEmpty()) {
-            Include include = includes.removeFirst();
-            Artifact artifact = include.getArtifact();
-            if (seen.contains(artifact)) {
-                continue;
-            }
-            seen.add(artifact);
-            LinkedList<Result> results = new LinkedList<Result>();
-            if (! new File(library, artifact.getPath("jar")).exists()) {
-                if (recurse) {
-                    results.addAll(download(artifact, artifact, null));
-                } else {
-                    results.add(new Result('!', artifact));
-                }
-            } else {
-                results.add(new Result('*', artifact));
-                includes.addAll(Artifacts.read(new File(library, artifact.getPath("dep"))));
-            }
-            for (Result result : results) {
-                if (result.flag != '!') {
-                    includes.addAll(Artifacts.read(new File(library, artifact.getPath("dep"))));
-                }
-                result.print(env.io.out);
-            }
-            env.io.out.flush();
+
+        env.output(new Ilk<List<Include>>() {}, includes);
+    }
+    
+    public Properties getClassified() throws IOException {
+        Properties all = new Properties();
+        Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("META-INF/services/com.goodworkalan.cups.maven.classified.properties");
+        while (urls.hasMoreElements()) {
+        	URL url = urls.nextElement();
+        	Properties properties = new Properties();
+        	properties.load(url.openStream());
+        	for (Object key : properties.keySet()) {
+        		if (!all.containsKey(key)) {
+        			all.put(key, properties.get(key));
+        		}
+        	}
         }
+        return all;
     }
 }

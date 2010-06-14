@@ -34,6 +34,10 @@ public class InstallCommand implements Commandable {
 	@Argument
 	public boolean force;
 	
+	/** Install to the specific library. */
+	@Argument
+	public String library;
+	
 	/**
 	 * Install an artifact.
 	 * 
@@ -91,6 +95,9 @@ public class InstallCommand implements Commandable {
 			ArgumentList arguments = new ArgumentList(command);
 			if (force) {
 				arguments.addArgument("force", "true");
+			}
+			if (library != null) {
+				arguments.addArgument("library", library);
 			}
 			try {
 				List<Include> includes = env.executor.run(new Ilk<List<Include>>() {}, env.io, env.commands.get(0), env.arguments.get(0), arguments, include.getArtifact());

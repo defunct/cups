@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,21 +28,27 @@ import com.goodworkalan.go.go.library.ArtifactPart;
 import com.goodworkalan.go.go.library.Artifacts;
 import com.goodworkalan.go.go.library.Include;
 import com.goodworkalan.go.go.version.VersionSelector;
+import com.goodworkalan.ilk.Ilk;
 
 
 @Command(parent = CupsCommand.class, name = "github")
 public class GitHubCommand implements Commandable {
-    @Argument
-    public boolean recurse;
-    
-    @Argument
+	private final static Pattern GITHUB_GROUP = Pattern.compile("com\\.github\\.\\w[-\\w\\d]*\\.\\w[-\\w\\d]*");
+
+	private final static Pattern EXTRACT_VERSION = Pattern.compile("^(?:\\w[-_\\w\\d]*\\-)+((?:\\.?\\d+)+)(.*?)$");
+
+	/** If true, install even if there is already an artifact installed. */
+	@Argument
     public boolean force;
     
+    /** The library in which to install. */
     @Argument
-    public boolean input;
+    public File library;
     
-    private final static Pattern GITHUB_GROUP = Pattern.compile("com\\.github\\.\\w[-\\w\\d]*\\.\\w[-\\w\\d]*");
-
+    /** Whether or not to return a list of build dependencies. */
+    @Argument
+    public boolean buildDependencies;
+    
     private boolean isGitHubProject(Artifact artifact) {
         return GITHUB_GROUP.matcher(artifact.getGroup()).matches();
     }
@@ -51,8 +58,6 @@ public class GitHubCommand implements Commandable {
         return new String[] { split[2], split[3] };
     }
     
-    private final Pattern EXTRACT_VERSION = Pattern.compile("^(?:\\w[-_\\w\\d]*\\-)+((?:\\.?\\d+)+)(.*?)$");
-
     public Artifact getArtifact(Environment env, File library, Include include, String...suffixes) {
         Artifact prototype = include.getArtifact();
         String prefix = prototype.getName() + "-"; 
@@ -126,59 +131,50 @@ public class GitHubCommand implements Commandable {
     }
     
     public void execute(Environment env) {
-        List<Artifact> artifacts = new ArrayList<Artifact>();
+    	if (buildDependencies) {
+            env.output(new Ilk<List<Include>>() {}, Collections.<Include>emptyList());
+    	} else {
+    		install(env);
+    	}
+    }
+    
+    private void install(Environment env) {
+    	library = env.library.getDirectories()[0];
+    	List<Include> includes = new ArrayList<Include>();
         for (String argument : env.remaining) {
-            artifacts.add(new Artifact(argument));
-        }
-        File library = env.library.getDirectories()[0];
-        List<Include> current = new ArrayList<Include>();
-        for (Artifact artifact : artifacts) {
-            current.add(new Include(artifact));
-        }
-        Set<Object> seen = new HashSet<Object>();
-        List<Include> next = new ArrayList<Include>();
-        while (!current.isEmpty()) {
-            for (Include include : current) {
-                Artifact artifact = include.getArtifact();
-                if (seen.contains(artifact.getUnversionedKey())) {
-                    continue;
-                }
-                seen.add(artifact.getUnversionedKey());
-                if (!isGitHubProject(artifact)) {
-                    new Result('!', artifact).print(env.io.out);
-                    continue;
-                }
-                Result result = new Result('~', artifact);
-                ArtifactPart artifactPart = env.library.getArtifactPart(new Include(artifact), "dep", "jar");
-                if (force || artifactPart == null) {
-                    File dir =artifactPart == null ? library : artifactPart.getLibraryDirectory();
-                    Artifact found = getArtifact(env, library, include, "dep", "jar");
-                    if (found != null) {
-                        for (String suffix : in("dep", "jar")) {
-                            result.suffixes.add(suffix);
-                            download(env, found, library, suffix, true);
-                        }
-                        for (String suffix : in("sources/jar", "javadoc/jar")) {
-                            if (download(env, found, library, suffix, false)) {
-                                result.suffixes.add(suffix);
-                            }
-                        }
-                        if (recurse) {
-                            next.addAll(Artifacts.read(new File(dir, found.getPath( "dep"))));
-                        }
-                        result.artifact = found;
-                        result.flag = '@';
-                    } else {
-                        result.flag = '!';
-                    }
-                } else if (recurse) { 
-                    next.addAll(Artifacts.read(new File(artifactPart.getLibraryDirectory(), artifactPart.getArtifact().getPath( "dep"))));
-                }
-                result.print(env.io.out);
-                env.io.out.flush();
+            Include include = new Include(new Artifact(argument));
+            Artifact artifact = include.getArtifact();
+            if (!isGitHubProject(artifact)) {
+                new Result('!', artifact).print(env.io.out);
+                continue;
             }
-            current = next;
-            next = new ArrayList<Include>();
+            Result result = new Result('~', artifact);
+            ArtifactPart artifactPart = env.library.getArtifactPart(new Include(artifact), "dep", "jar");
+            if (force || artifactPart == null) {
+            	File dir = artifactPart == null ? library : artifactPart.getLibraryDirectory();
+            	Artifact found = getArtifact(env, library, include, "dep", "jar");
+            	if (found != null) {
+            		for (String suffix : in("dep", "jar")) {
+            			result.suffixes.add(suffix);
+            			download(env, found, library, suffix, true);
+            		}
+            		for (String suffix : in("sources/jar", "javadoc/jar")) {
+            			if (download(env, found, library, suffix, false)) {
+            				result.suffixes.add(suffix);
+            			}
+            		}
+            		includes.addAll(Artifacts.read(new File(dir, found.getPath( "dep"))));
+            		result.artifact = found;
+            		result.flag = '@';
+                } else {
+                    result.flag = '!';
+                }
+            } else {
+            	includes.addAll(Artifacts.read(new File(artifactPart.getLibraryDirectory(), artifactPart.getArtifact().getPath( "dep"))));
+            }
+            result.print(env.io.out);
+            env.io.out.flush();
         }
+        env.output(new Ilk<List<Include>>() {}, includes);
     }
 }

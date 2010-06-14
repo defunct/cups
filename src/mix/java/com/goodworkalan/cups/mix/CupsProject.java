@@ -23,6 +23,7 @@ public class CupsProject implements ProjectModule {
                 .depends()
                     .production("com.github.bigeasy.github4j/github4j-downloads/0.+1")
                     .production("com.github.bigeasy.go-go/go-go/0.+1")
+                    .production("com.github.bigeasy.madlib/madlib/0.+1")
                     .production("com.github.bigeasy.comfort-io/comfort-io/0.+1")
                     .production("com.github.bigeasy.danger/danger/0.+1")
                     .development("org.testng/testng-jdk15/5.10")

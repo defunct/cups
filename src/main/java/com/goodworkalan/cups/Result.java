@@ -22,6 +22,28 @@ public class Result {
         this.suffixes.addAll(Arrays.asList(suffix));
     }
     
+    public String toString() {
+    	StringBuilder string = new StringBuilder();
+    	string.append(flag).append(' ').append(artifact);
+    	string.toString();
+        if (!suffixes.isEmpty()) {
+            string.append(" (");
+            String separator = "";
+            for (String suffix : suffixes) {
+            	string.append(separator);
+            	string.append(suffix);
+                separator = ",";
+            }
+            string.append(")");
+        }
+        String separator = " ";
+        for (Artifact exclude : excludes) {
+        	string.append(separator).append(exclude);
+        	separator = ",";
+        }
+        return string.toString();
+    }
+
     public void print(PrintStream out) {
         out.print(flag);
         out.print(" ");

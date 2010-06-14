@@ -1,4 +1,4 @@
-package com.goodworkalan.cups.remix.forumla.javax.inject;
+package com.goodworkalan.formula.javax.inject;
 
 import static com.goodworkalan.comfort.io.Files.file;
 

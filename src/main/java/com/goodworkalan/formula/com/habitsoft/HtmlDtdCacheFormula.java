@@ -1,4 +1,4 @@
-package com.goodworkalan.cups.remix.formula.com.habitsoft;
+package com.goodworkalan.formula.com.habitsoft;
 
 import static com.goodworkalan.comfort.io.Files.file;
 

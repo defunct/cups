@@ -1,4 +1,4 @@
-package com.goodworkalan.cups.org.hibernate;
+package com.goodworkalan.formula.org.hibernate;
 
 import java.io.File;
 

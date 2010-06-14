@@ -1,4 +1,4 @@
-package com.goodworkalan.cups.remix.formula.javax.inject;
+package com.goodworkalan.cups.remix.forumla.javax.inject;
 
 import static com.goodworkalan.comfort.io.Files.file;
 
@@ -12,7 +12,7 @@ import com.goodworkalan.spawn.Spawn;
 
 public class InjectFormula implements Commandable, ProjectModule {
     /**
-     * Create the project directory and execute mix.
+     * Create the project directory for javax.inject.
      */
     public void execute(Environment env) {
         Sandbox sandbox = env.get(Sandbox.class, 1);
@@ -21,7 +21,6 @@ public class InjectFormula implements Commandable, ProjectModule {
         spawn.$$("svn", "checkout", "http://atinject.googlecode.com/svn/trunk/", "atinject");
         file(sandbox.directory, "remixed", "src", "main").mkdirs();
         file(sandbox.directory, "atinject", "src").renameTo(file(sandbox.directory, "remixed", "src", "main", "java"));
-        sandbox.mix(env);
     }
 
     /**

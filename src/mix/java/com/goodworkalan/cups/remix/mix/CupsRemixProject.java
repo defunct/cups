@@ -23,6 +23,8 @@ public class CupsRemixProject implements ProjectModule {
                 .depends()
                     .production("com.github.bigeasy.cups/cups/0.1.+0")
                     .production("com.github.bigeasy.mix/mix/0.+1")
+                    .production("com.github.bigeasy.mix/mix-junit/0.+1")
+                    .production("com.github.bigeasy.mix/mix-antlr/0.+1")
                     .production("com.github.bigeasy.spawn/spawn/0.+1")
                     .production("com.github.bigeasy.comfort-xml/comfort-xml/0.1.+0")
                     .development("org.testng/testng-jdk15/5.10")

@@ -15,6 +15,7 @@ public class FormulaTest {
     public void execute() {
         Go.execute(getLibrary(), "cups", "remix", "javax.inject/inject");
         Go.execute(getLibrary(), "cups", "remix", "com.habitsoft/html-dtd-cache");
+        Go.execute(getLibrary(), "cups", "remix", "com.hibernate/hibernate-core/3.5.2-Final");
     }
 
     private List<File> getLibrary() {

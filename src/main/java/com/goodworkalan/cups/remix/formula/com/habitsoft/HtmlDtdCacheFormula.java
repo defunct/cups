@@ -10,7 +10,18 @@ import com.goodworkalan.mix.builder.Builder;
 import com.goodworkalan.mix.cookbook.JavaProject;
 import com.goodworkalan.spawn.Spawn;
 
+/**
+ * Formula for html-dtd-cache.
+ * 
+ * @author Alan Gutierrez
+ */
 public class HtmlDtdCacheFormula implements Commandable, ProjectModule {
+	/**
+	 * Create the Mix project for html-dtd-cache.
+	 * 
+	 * @param env
+	 *            The environment.
+	 */
     public void execute(Environment env) {
         Sandbox sandbox = env.get(Sandbox.class, 1);
         Spawn spawn = new Spawn();
@@ -19,9 +30,7 @@ public class HtmlDtdCacheFormula implements Commandable, ProjectModule {
         file(sandbox.directory, "remixed").mkdirs();
         file(sandbox.directory, "html-cache-dtds", "src").renameTo(file(sandbox.directory, "remixed", "src"));
         spawn.setWorkingDirectory(file(sandbox.directory, "remixed"));
-        spawn.$(getClass().getResourceAsStream("html-dtd-cache.patch"))
-             .$("git", "apply").run();
-        sandbox.mix(env);
+        spawn.$(getClass().getResourceAsStream("html-dtd-cache.patch")).$("git", "apply").run();
     }
     
     /**

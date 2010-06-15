@@ -32,7 +32,7 @@ public class CupsInstallerProject implements ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces("com.github.bigeasy.cups/cups-installer/0.1.1.29")
+                .produces("com.github.bigeasy.cups/cups-installer/0.1.1.30")
                 .depends()
                     .development("org.testng/testng-jdk15/5.10")
                     .end()

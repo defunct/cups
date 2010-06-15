@@ -22,6 +22,7 @@ public class CupsRemixProject implements ProjectModule {
                 .produces("com.github.bigeasy.cups/cups-remix/0.1.1.3")
                 .depends()
                     .production("com.github.bigeasy.cups/cups/0.1.+0")
+                    .production("com.github.bigeasy.cups/cups-maven/0.1.+0")
                     .production("com.github.bigeasy.mix/mix/0.+1")
                     .production("com.github.bigeasy.mix/mix-junit/0.+1")
                     .production("com.github.bigeasy.mix/mix-antlr/0.+1")

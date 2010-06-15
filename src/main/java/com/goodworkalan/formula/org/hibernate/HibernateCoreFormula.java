@@ -3,18 +3,20 @@ package com.goodworkalan.formula.org.hibernate;
 import java.io.File;
 
 import com.goodworkalan.cups.remix.Sandbox;
+import com.goodworkalan.go.go.Commandable;
 import com.goodworkalan.go.go.Environment;
+import com.goodworkalan.mix.ProjectModule;
 import com.goodworkalan.mix.antlr.Antlr;
 import com.goodworkalan.mix.builder.Builder;
 import com.goodworkalan.mix.cookbook.JavaProject;
 import com.goodworkalan.spawn.Spawn;
 
-public class HibernateCoreFormula {
+public class HibernateCoreFormula implements Commandable, ProjectModule {
     public void execute(Environment env) {
         Sandbox sandbox = env.get(Sandbox.class, 1);
         Spawn spawn = new Spawn();
         spawn.setWorkingDirectory(sandbox.directory);
-        spawn.$$("svn", "checkout", "http://anonsvn.jboss.org/repos/hibernate/core/tags/hibernate-3.5.2-Final/core/", "html-cache-dtds");
+        spawn.$$("svn", "checkout", "http://anonsvn.jboss.org/repos/hibernate/core/tags/hibernate-3.5.2-Final/core/", "remixed");
     }
 
     /**
@@ -55,27 +57,27 @@ public class HibernateCoreFormula {
             .recipe("antlr")
                 .task(Antlr.class)
                     .source(new File("src/main/antlr")).include("hql.g").end()
-                    .output(new File("src/main/java"))
+                    .output(new File("src/main/java/org/hibernate/hql/antlr"))
                     .traceParser()
                     .end()
                 .task(Antlr.class)
                     .source(new File("src/main/antlr")).include("hql-sql.g").end()
-                    .output(new File("src/main/java"))
+                    .output(new File("src/main/java/org/hibernate/hql/antlr"))
                     .traceTreeParser()
                     .end()
                 .task(Antlr.class)
                     .source(new File("src/main/antlr")).include("sql-gen.g").end()
-                    .output(new File("src/main/java"))
+                    .output(new File("src/main/java/org/hibernate/hql/antlr"))
                     .traceTreeParser()
                     .end()
                 .task(Antlr.class)
                     .source(new File("src/main/antlr")).include("order-by.g").end()
-                    .output(new File("src/main/java"))
+                    .output(new File("src/main/java/org/hibernate/hql/antlr"))
                     .traceParser()
                     .end()
                 .task(Antlr.class)
                     .source(new File("src/main/antlr")).include("order-by-render.g").end()
-                    .output(new File("src/main/java"))
+                    .output(new File("src/main/java/org/hibernate/hql/antlr"))
                     .traceTreeParser()
                     .end()
                 .end()

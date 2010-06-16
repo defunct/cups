@@ -17,6 +17,9 @@ public class MavenCommandTest {
         File directory = file(home, ".m2", "repository");
         Files.unlink(new File("target/test/library"));
         Go.execute(Collections.singletonList(directory), 
+                "cups", "install", "--library=target/test/library", "org.hibernate/hibernate-core/3.3.1.GA"
+                );
+        Go.execute(Collections.singletonList(directory), 
             "cups", "install", "--library=target/test/library", "--recursive", "org.slf4j/slf4j-api/1.4.2"
             );
         Go.execute(Collections.singletonList(directory), 

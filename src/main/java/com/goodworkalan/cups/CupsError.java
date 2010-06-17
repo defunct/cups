@@ -4,7 +4,7 @@ import com.goodworkalan.danger.ContextualDanger;
 
 @SuppressWarnings("serial")
 public class CupsError extends ContextualDanger {
-    /**
+	/**
      * Create a mix error with the given error code.
      * 
      * @param context

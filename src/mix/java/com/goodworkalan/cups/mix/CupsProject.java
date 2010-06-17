@@ -19,7 +19,7 @@ public class CupsProject implements ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces("com.github.bigeasy.cups/cups/0.1.1.13")
+                .produces("com.github.bigeasy.cups/cups/0.1.1.14")
                 .depends()
                     .production("com.github.bigeasy.github4j/github4j-downloads/0.+1")
                     .production("com.github.bigeasy.go-go/go-go/0.+1")

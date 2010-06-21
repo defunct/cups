@@ -57,6 +57,7 @@ public class InstallCommand implements Commandable {
 		}
 	}
 
+    // TODO Document.
 	private void exclude(Environment env, ArtifactAssociation associations, Include include, Set<Exclude> excludes, Set<Exclude> installed) {
 		if (!excludes.contains(include.getArtifact().getUnversionedKey())) {
 			Set<Exclude> subExcludes = new HashSet<Exclude>();
@@ -90,6 +91,7 @@ public class InstallCommand implements Commandable {
 		}
 	}
 	
+    // TODO Document.
 	private void install(Environment env, ArtifactAssociation associations, Include include, Set<Exclude> excludes, Set<Exclude> installed, List<String> command) {
 		if (buildDependencies(env, associations, include, excludes, installed, command)) {
 			ArgumentList arguments = new ArgumentList(command);
@@ -119,6 +121,7 @@ public class InstallCommand implements Commandable {
 		}
 	}
 	
+    // TODO Document.
 	public boolean buildDependencies(Environment env, ArtifactAssociation associations, Include include, Set<Exclude> excludes, Set<Exclude> installed, List<String> command) {
 		ArgumentList arguments = new ArgumentList(command);
 		arguments.addArgument("build-dependencies", "true");

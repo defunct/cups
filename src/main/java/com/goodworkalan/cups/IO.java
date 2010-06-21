@@ -13,7 +13,9 @@ import java.util.Map;
 
 import com.goodworkalan.go.go.library.Artifact;
 
+// TODO Document.
 public class IO {
+    // TODO Document.
     public static Map<String, Artifact> read(InputStream in) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         Map<String, Artifact> map = new LinkedHashMap<String, Artifact>();
@@ -46,6 +48,7 @@ public class IO {
         return map;
     }
     
+    // TODO Document.
     public static void flatten(File library, Artifact artifact, List<Artifact> dependencies) {
         File file = new File(library, artifact.getPath("dep"));
         File directory = file.getParentFile();

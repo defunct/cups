@@ -14,7 +14,9 @@ import com.goodworkalan.go.go.library.Artifact;
 import com.goodworkalan.go.go.version.VersionSelector;
 import com.goodworkalan.madlib.VariableProperties;
 
+// TODO Document.
 public class ArtifactAssociation {
+	// TODO Document.
 	private final Map<List<String>, Map<String, String>> commands;
 	
 	/** The pattern to match an unversioned artifact. */
@@ -22,6 +24,7 @@ public class ArtifactAssociation {
 	/** The pattern to match a versioned artifact. */
 	private final static Pattern VERSIONED_ARTIFACT = Pattern.compile("[^/]+/[^/]+/[^/]+");
 
+	// TODO Document.
 	public ArtifactAssociation(String path) throws IOException {
 		this.commands = getCommands(path);
 	}
@@ -69,6 +72,7 @@ public class ArtifactAssociation {
 		return commands;
 	}
 	
+	// TODO Document.
 	public String get(Artifact artifact) {
 		Map<String, String> versions = commands.get(artifact.getUnversionedKey());
 		if (versions == null) {

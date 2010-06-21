@@ -2,6 +2,7 @@ package com.goodworkalan.cups;
 
 import com.goodworkalan.danger.ContextualDanger;
 
+//TODO Document.
 @SuppressWarnings("serial")
 public class CupsError extends ContextualDanger {
 	/**

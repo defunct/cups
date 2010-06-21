@@ -7,21 +7,28 @@ import java.util.List;
 
 import com.goodworkalan.go.go.library.Artifact;
 
+// TODO Document.
 public class Result {
+    // TODO Document.
     public Artifact artifact;
     
+    // TODO Document.
     public char flag;
     
+    // TODO Document.
     public final List<String> suffixes = new ArrayList<String>();
     
+    // TODO Document.
     public final List<Artifact> excludes = new ArrayList<Artifact>();
     
+    // TODO Document.
     public Result(char flag, Artifact artifact, String...suffix) {
         this.flag = flag;
         this.artifact = artifact;
         this.suffixes.addAll(Arrays.asList(suffix));
     }
     
+    // TODO Document.
     public String toString() {
     	StringBuilder string = new StringBuilder();
     	string.append(flag).append(' ').append(artifact);
@@ -44,6 +51,7 @@ public class Result {
         return string.toString();
     }
 
+    // TODO Document.
     public void print(PrintStream out) {
         out.print(flag);
         out.print(" ");

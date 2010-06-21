@@ -31,10 +31,13 @@ import com.goodworkalan.go.go.version.VersionSelector;
 import com.goodworkalan.ilk.Ilk;
 
 
+//TODO Document.
 @Command(parent = CupsCommand.class, name = "github")
 public class GitHubCommand implements Commandable {
+	// TODO Document.
 	private final static Pattern GITHUB_GROUP = Pattern.compile("com\\.github\\.\\w[-\\w\\d]*\\.\\w[-\\w\\d]*");
 
+	// TODO Document.
 	private final static Pattern EXTRACT_VERSION = Pattern.compile("^(?:\\w[-_\\w\\d]*\\-)+((?:\\.?\\d+)+)(.*?)$");
 
 	/** If true, install even if there is already an artifact installed. */
@@ -49,15 +52,18 @@ public class GitHubCommand implements Commandable {
     @Argument
     public boolean buildDependencies;
     
+    // TODO Document.
     private boolean isGitHubProject(Artifact artifact) {
         return GITHUB_GROUP.matcher(artifact.getGroup()).matches();
     }
     
+    // TODO Document.
     private String[] getRepository(Artifact artifact) {
         String[] split = artifact.getGroup().split("\\.");
         return new String[] { split[2], split[3] };
     }
     
+    // TODO Document.
     public Artifact getArtifact(Environment env, File library, Include include, String...suffixes) {
         Artifact prototype = include.getArtifact();
         String prefix = prototype.getName() + "-"; 
@@ -98,6 +104,7 @@ public class GitHubCommand implements Commandable {
         return null;
     }
     
+    // TODO Document.
     private boolean download(Environment env, Artifact artifact, File library, String suffix, boolean required) {
         try {
             File full = new File(library, artifact.getPath(suffix));
@@ -126,10 +133,12 @@ public class GitHubCommand implements Commandable {
         }
     }
     
+    // TODO Document.
     private static String[] in(String...strings) {
         return strings;
     }
     
+    // TODO Document.
     public void execute(Environment env) {
     	if (buildDependencies) {
             env.output(new Ilk<List<Include>>() {}, Collections.<Include>emptyList());
@@ -138,6 +147,7 @@ public class GitHubCommand implements Commandable {
     	}
     }
     
+    // TODO Document.
     private void install(Environment env) {
     	library = env.library.getDirectories()[0];
     	List<Include> includes = new ArrayList<Include>();

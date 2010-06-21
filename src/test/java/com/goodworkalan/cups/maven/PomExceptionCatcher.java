@@ -5,16 +5,21 @@ import static org.testng.Assert.fail;
 
 import com.goodworkalan.cups.maven.PomException;
 
+// TODO Document.
 public class PomExceptionCatcher {
+    // TODO Document.
     private final int code;
 
+    // TODO Document.
     private final Runnable runnable;
 
+    // TODO Document.
     public PomExceptionCatcher(int code, Runnable runnable) {
         this.code = code;
         this.runnable = runnable;
     }
 
+    // TODO Document.
     public void run() {
         try {
             runnable.run();

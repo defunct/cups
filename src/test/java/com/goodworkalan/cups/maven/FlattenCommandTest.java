@@ -11,7 +11,9 @@ import com.goodworkalan.comfort.io.Files;
 import com.goodworkalan.comfort.io.Find;
 import com.goodworkalan.go.go.Go;
 
+// TODO Document.
 public class FlattenCommandTest {
+    // TODO Document.
     @Test
     public void flatten() {
         Find find = new Find().include("**/*.dep");

@@ -15,7 +15,9 @@ import com.goodworkalan.cups.maven.PomException;
 import com.goodworkalan.cups.maven.PomReader;
 import com.goodworkalan.go.go.library.Artifact;
 
+// TODO Document.
 public class PomReaderTest {
+    // TODO Document.
     @Test
     public void parent() {
         PomReader poms = getPomReader();
@@ -26,16 +28,19 @@ public class PomReaderTest {
         assertEquals(parent.getVersion(), "1.4.2");
     }
     
+    // TODO Document.
     @Test
     public void nullParent() {
         assertNull(getPomReader().getParent(new Artifact("com.broken/broken/0.1")));
     }
 
+    // TODO Document.
     private PomReader getPomReader() {
         PomReader poms = new PomReader(new File("src/test/poms").getAbsoluteFile());
         return poms;
     }
     
+    // TODO Document.
     @Test
     public void artifactNotFound() {
         new PomExceptionCatcher(PomException.POM_FILE_NOT_FOUND, new Runnable() {
@@ -46,6 +51,7 @@ public class PomReaderTest {
         }).run();
     }
     
+    // TODO Document.
     @Test
     public void immediateDependenices() {
         List<Artifact> artifacts = getPomReader().getImmediateDependencies(new Artifact("org.eclipse.jetty/jetty-project/7.0.0.RC3"));
@@ -58,6 +64,7 @@ public class PomReaderTest {
         }
     }
     
+    // TODO Document.
     @Test
     public void testRequired() {
         assertTrue(PomReader.required(null, null));
@@ -68,6 +75,7 @@ public class PomReaderTest {
         assertFalse(PomReader.required(null, "true"));
     }
     
+    // TODO Document.
     @Test
     public void testOptional() {
         assertTrue(PomReader.optional("test", null));

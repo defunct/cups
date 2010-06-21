@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.goodworkalan.danger.CodedDanger;
 
+// TODO Document.
 public class PomException extends CodedDanger {
     /** A cache of resource bundles. */
     private final static ConcurrentHashMap<String, ResourceBundle> bundles = new ConcurrentHashMap<String, ResourceBundle>();

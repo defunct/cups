@@ -52,6 +52,7 @@ public class PomReader {
         this.library = library;
     }
     
+    // TODO Document.
     void getMetaData(Document document, Properties properties, Map<String, Artifact> dependencies, Set<String> optionals) {
         Artifact parent = getParent(document);
         if (parent != null) {
@@ -64,11 +65,13 @@ public class PomReader {
         }
     }
     
+    // TODO Document.
     public Artifact getParent(Artifact artifact) {
         Document document = parse(artifact);
         return getParent(document);
     }
 
+    // TODO Document.
     private Artifact getParent(Document document) {
         for (Element element : document.elements("/*[local-name() = 'project']/*[local-name() = 'parent' and *[local-name() = 'artifactId'] and *[local-name() = 'groupId'] and *[local-name() = 'version']]")) {
             return new Artifact(
@@ -80,6 +83,7 @@ public class PomReader {
         return null;
     }
 
+    // TODO Document.
     Document parse(final Artifact artifact) {
         Document document = documents.get(artifact);
         if (document != null) {
@@ -96,6 +100,7 @@ public class PomReader {
         return document;
     }
     
+    // TODO Document.
     void getDependencyManagement(Document document, Artifact artifact, Map<String, Artifact> dependencies, Set<String> optionals) {
         Properties properties = new Properties();
         properties.setProperty("project.groupId", artifact.getGroup());
@@ -117,14 +122,17 @@ public class PomReader {
         }
     }
 
+    // TODO Document.
     static final boolean optional(String scope, String optional) {
         return "test".equals(scope) || "provided".equals(scope) || "true".equals(optional);
     }
 
+    // TODO Document.
     static final boolean required(String scope, String optional) {
         return (scope == null || scope.equals("compile") || scope.equals("runtime")) && (optional == null || !"true".equals(optional));
     }
     
+    // TODO Document.
     public List<Artifact> getImmediateDependencies(Artifact artifact) {
         List<Artifact> artifacts = new ArrayList<Artifact>();
         Map<String, Artifact> dependencies = new HashMap<String, Artifact>();

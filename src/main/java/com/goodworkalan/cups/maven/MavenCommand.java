@@ -353,6 +353,7 @@ public class MavenCommand implements Commandable {
         env.output(new Ilk<List<Include>>() {}, includes);
     }
     
+    // TODO Document.
     public Properties getClassified() throws IOException {
         Properties all = new Properties();
         Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("META-INF/services/com.goodworkalan.cups.maven.classified.properties");

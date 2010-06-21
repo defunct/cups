@@ -19,19 +19,24 @@ import com.goodworkalan.go.go.library.Include;
 import com.goodworkalan.ilk.Ilk;
 import com.goodworkalan.reflective.Reflective;
 
+// TODO Document.
 @Command(parent = CupsCommand.class)
 public class RemixCommand implements Commandable {
+    // TODO Document.
 	@Argument
 	public boolean buildDependencies;
 	
+    // TODO Document.
 	@Argument
 	public boolean clean;
 	
+    // TODO Document.
 	public File getSandbox(Artifact artifact) {
 		File directory = new File(Files.file(System.getProperty("user.home"), ".cups", "remix"));
 		return file(directory, artifact.getUnversionedDirectoryPath(), artifact.getVersion());
 	}
 	
+    // TODO Document.
 	public void execute(Environment env) {
 		for (String argument : env.remaining) {
 			Artifact artifact = new Artifact(argument);
@@ -57,6 +62,7 @@ public class RemixCommand implements Commandable {
 		}
 	}
 	
+    // TODO Document.
 	public void checkout(String formulaClassName, Environment env) {
 		File workspace = new File(Files.file(System.getProperty("user.home"), ".cups", "remix"));
 		for (String argument : env.remaining) {

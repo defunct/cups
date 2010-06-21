@@ -11,7 +11,9 @@ import com.goodworkalan.mix.builder.Builder;
 import com.goodworkalan.mix.cookbook.JavaProject;
 import com.goodworkalan.spawn.Spawn;
 
+// TODO Document.
 public class HibernateCoreFormula implements Commandable, ProjectModule {
+    // TODO Document.
     public void execute(Environment env) {
         Sandbox sandbox = env.get(Sandbox.class, 1);
         Spawn spawn = new Spawn();

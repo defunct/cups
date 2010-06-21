@@ -10,6 +10,7 @@ import com.goodworkalan.mix.builder.Builder;
 import com.goodworkalan.mix.cookbook.JavaProject;
 import com.goodworkalan.spawn.Spawn;
 
+// TODO Document.
 public class InjectFormula implements Commandable, ProjectModule {
     /**
      * Create the project directory for javax.inject.

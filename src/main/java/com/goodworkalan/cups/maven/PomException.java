@@ -1,15 +1,9 @@
 package com.goodworkalan.cups.maven;
 
-import java.util.ResourceBundle;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.goodworkalan.danger.CodedDanger;
 
 // TODO Document.
 public class PomException extends CodedDanger {
-    /** A cache of resource bundles. */
-    private final static ConcurrentHashMap<String, ResourceBundle> bundles = new ConcurrentHashMap<String, ResourceBundle>();
-
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
@@ -25,6 +19,6 @@ public class PomException extends CodedDanger {
      *            The error message format arguments.
      */
     public PomException(int code, Object...arguments) {
-        super(bundles, code, null, arguments);
+        super(code, null, arguments);
     }
 }

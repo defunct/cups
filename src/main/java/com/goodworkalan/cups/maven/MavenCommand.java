@@ -1,6 +1,7 @@
 package com.goodworkalan.cups.maven;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -244,8 +245,10 @@ public class MavenCommand implements Commandable {
      *            classifier.
      * @return A list of <code>Result</code> instances for the Maven artifact
      *         and any parent artifacts.
+     * @throws FileNotFoundException
+     *             If an POM file cannot be found.
      */
-    private LinkedList<Result> download(Artifact source, Artifact destination, String classifier) {
+    private LinkedList<Result> download(Artifact source, Artifact destination, String classifier) throws FileNotFoundException {
         LinkedList<Result> results = new LinkedList<Result>();
         PomReader reader = new PomReader(library);
         File pom = new File(library, destination.getPath("pom"));
@@ -337,7 +340,11 @@ public class MavenCommand implements Commandable {
             }
             LinkedList<Result> results = new LinkedList<Result>();
             if (force || ! new File(library, destination.getPath("dep")).exists()) {
-                results.addAll(download(source, destination, classifier));
+                try {
+                    results.addAll(download(source, destination, classifier));
+                } catch (FileNotFoundException e) {
+                    throw new CupsError(MavenCommand.class, "fileNotFound", e, e.getMessage());
+                }
             } else {
                 results.add(new Result('*', destination));
             }

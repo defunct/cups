@@ -1,8 +1,7 @@
 package com.goodworkalan.cups.maven;
 
-import static com.goodworkalan.cups.maven.PomException.POM_FILE_NOT_FOUND;
-
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,7 +52,7 @@ public class PomReader {
     }
     
     // TODO Document.
-    void getMetaData(Document document, Properties properties, Map<String, Artifact> dependencies, Set<String> optionals) {
+    void getMetaData(Document document, Properties properties, Map<String, Artifact> dependencies, Set<String> optionals) throws FileNotFoundException {
         Artifact parent = getParent(document);
         if (parent != null) {
             getDependencyManagement(parse(parent), parent, dependencies, optionals);
@@ -66,7 +65,7 @@ public class PomReader {
     }
     
     // TODO Document.
-    public Artifact getParent(Artifact artifact) {
+    public Artifact getParent(Artifact artifact) throws FileNotFoundException {
         Document document = parse(artifact);
         return getParent(document);
     }
@@ -84,24 +83,23 @@ public class PomReader {
     }
 
     // TODO Document.
-    Document parse(final Artifact artifact) {
+    Document parse(final Artifact artifact) throws FileNotFoundException {
         Document document = documents.get(artifact);
         if (document != null) {
             return document;
         }
         File file = new File(library, artifact.getPath("pom"));
         if (!file.exists()) {
-            throw new PomException(POM_FILE_NOT_FOUND, artifact);
+            throw new FileNotFoundException(file.toString());
         }
         Serializer serializer = new Serializer();
-        serializer.setNamespaceAware(false);
         document = serializer.load(file);
         documents.put(artifact, document);
         return document;
     }
     
     // TODO Document.
-    void getDependencyManagement(Document document, Artifact artifact, Map<String, Artifact> dependencies, Set<String> optionals) {
+    void getDependencyManagement(Document document, Artifact artifact, Map<String, Artifact> dependencies, Set<String> optionals) throws FileNotFoundException {
         Properties properties = new Properties();
         properties.setProperty("project.groupId", artifact.getGroup());
         properties.setProperty("project.artifactId", artifact.getName());
@@ -133,7 +131,7 @@ public class PomReader {
     }
     
     // TODO Document.
-    public List<Artifact> getImmediateDependencies(Artifact artifact) {
+    public List<Artifact> getImmediateDependencies(Artifact artifact) throws FileNotFoundException {
         List<Artifact> artifacts = new ArrayList<Artifact>();
         Map<String, Artifact> dependencies = new HashMap<String, Artifact>();
         Set<String> optionals = new HashSet<String>();

@@ -5,21 +5,21 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.cups.maven.PomException;
-import com.goodworkalan.cups.maven.PomReader;
 import com.goodworkalan.go.go.library.Artifact;
 
 // TODO Document.
 public class PomReaderTest {
-    // TODO Document.
+    /** Test parent. */
     @Test
-    public void parent() {
+    public void parent() throws FileNotFoundException {
         PomReader poms = getPomReader();
         Artifact parent = poms.getParent(new Artifact("org.slf4j/slf4j-api/1.4.2"));
         assertNotNull(parent);
@@ -28,9 +28,9 @@ public class PomReaderTest {
         assertEquals(parent.getVersion(), "1.4.2");
     }
     
-    // TODO Document.
+    /** Test null parent. */
     @Test
-    public void nullParent() {
+    public void nullParent() throws FileNotFoundException {
         assertNull(getPomReader().getParent(new Artifact("com.broken/broken/0.1")));
     }
 
@@ -43,17 +43,17 @@ public class PomReaderTest {
     // TODO Document.
     @Test
     public void artifactNotFound() {
-        new PomExceptionCatcher(PomException.POM_FILE_NOT_FOUND, new Runnable() {
-            public void run() {
-                getPomReader().getParent(new Artifact("com.broken/broken/8.1"));
-                
-            }
-        }).run();
+        try {
+            getPomReader().getParent(new Artifact("com.broken/broken/8.1"));
+        } catch (FileNotFoundException e) {
+            return;
+        }
+        fail("Expected exception not thrown.");
     }
     
     // TODO Document.
     @Test
-    public void immediateDependenices() {
+    public void immediateDependenices() throws FileNotFoundException {
         List<Artifact> artifacts = getPomReader().getImmediateDependencies(new Artifact("org.eclipse.jetty/jetty-project/7.0.0.RC3"));
         for (Artifact artifact : artifacts) {
             System.out.println(artifact);

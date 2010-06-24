@@ -15,13 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+/**
+ * A minimal command line program to install Cups.
+ *
+ * @author Alan Gutierrez
+ */
 public class CupsInstaller {
     /**
-     * Create a file by joinging the string values of the given objects with the
+     * Create a file by joining the string values of the given objects with the
      * system file separator.
      * 
      * @param objects
-     * @return
+     *            The parts to join.
+     * @return A file that references the given path.
      */
     private static File file(Object...objects) {
         StringBuilder file = new StringBuilder();
@@ -34,6 +40,19 @@ public class CupsInstaller {
         return new File(file.toString());
     }
 
+    /**
+     * Fetch an artifact from GitHub to a file.
+     * 
+     * @param full
+     *            The destination file.
+     * @param artifact
+     *            The project from which to fetch artifacts.
+     * @param suffix
+     *            The the artifact suffix.
+     * @return True if the download was successful.
+     * @throws IOException
+     *             For any I/O error.
+     */
     private static boolean fetch(File full, String[] artifact, String suffix) throws IOException {
         String login = artifact[0].split("\\.")[2];
         String group = artifact[0].split("\\.")[3];
@@ -43,7 +62,6 @@ public class CupsInstaller {
         } catch (MalformedURLException e) {
             // Never happens.
         }
-        System.out.println(url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
             InputStream in = connection.getInputStream();
@@ -59,10 +77,12 @@ public class CupsInstaller {
         }
         return false;
     }
+
     /**
      * Install Java cups.
      * 
      * @param args
+     *            The command line arguments
      */
     public static void main(String[] args) throws IOException {
         // Default library is the default Maven repository.
@@ -116,8 +136,8 @@ public class CupsInstaller {
                         System.err.println("Unable to install "+ artifact[1] + "-" + artifact[2] + "." + suffix + ".");
                         System.exit(1);
                     }
-                    System.out.println("Installed " + artifact[1] + "-" + artifact[2] + "." + suffix + ".");
                 }
+                System.out.println("Installed " + artifact[1] + "-" + artifact[2] + ".");
             }
         }
         if (boot) {

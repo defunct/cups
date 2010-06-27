@@ -19,7 +19,7 @@ public class CupsRemixProject implements ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces("com.github.bigeasy.cups/cups-remix/0.1.1.3")
+                .produces("com.github.bigeasy.cups/cups-remix/0.1.1.4")
                 .depends()
                     .production("com.github.bigeasy.cups/cups/0.1.+0")
                     .production("com.github.bigeasy.cups/cups-maven/0.1.+0")

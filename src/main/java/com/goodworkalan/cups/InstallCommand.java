@@ -21,7 +21,15 @@ import com.goodworkalan.ilk.Ilk;
 
 /**
  * Installs an artifact.
- *
+ * <p>
+ * The artifacts are installed by running Cups commands for the specific
+ * repository format for the repository that provides the artifact. The commands
+ * are kept in command files, which are property files with an artifact string
+ * as the key, and the sub-command to install the artifact as the value. The
+ * files are named
+ * <code>/META-INF/services/com.goodworkalan.cups.installer.commands.properties</code>
+ * 
+ * 
  * @author Alan Gutierrez
  */
 @Command(parent = CupsCommand.class)

@@ -3,9 +3,20 @@ package com.goodworkalan.cups;
 import com.goodworkalan.go.go.Commandable;
 import com.goodworkalan.go.go.Environment;
 
-//TODO Document.
+/**
+ * The cups command is used for qualification of sub-commands only. It provides
+ * no functionality. It simply indicates that the sub-commands are contained by
+ * the Cups application namespace.
+ * 
+ * @author Alan Gutierrez
+ */
 public class CupsCommand implements Commandable {
-	// TODO Document.
+    /**
+     * Does nothing.
+     * 
+     * @param env
+     *            The environment.
+     */
     public void execute(Environment env) {
     }
 }

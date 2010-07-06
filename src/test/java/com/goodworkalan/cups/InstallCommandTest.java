@@ -10,11 +10,11 @@ import com.goodworkalan.go.go.Go;
 
 /**
  * Unit tests for the {@link InstallCommand} class.
- *
+ * 
  * @author Alan Gutierrez
  */
 public class InstallCommandTest {
-	/** Test install. */
+    /** Test install. */
     @Test
     public void install() {
         File home = new File(System.getProperty("user.home"));

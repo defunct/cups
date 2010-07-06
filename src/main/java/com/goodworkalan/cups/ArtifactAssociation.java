@@ -14,9 +14,14 @@ import com.goodworkalan.go.go.library.Artifact;
 import com.goodworkalan.go.go.version.VersionSelector;
 import com.goodworkalan.madlib.VariableProperties;
 
-// TODO Document.
+/**
+ * Associates artifacts read from configuration files with a string value.
+ * Used to associate artifacts with the Mix commands used to install them. 
+ * 
+ * @author Alan Gutierrez
+ */
 public class ArtifactAssociation {
-	// TODO Document.
+    /** The map of group and name parts to a map of strings indexed by version. */
 	private final Map<List<String>, Map<String, String>> commands;
 	
 	/** The pattern to match an unversioned artifact. */
@@ -24,15 +29,21 @@ public class ArtifactAssociation {
 	/** The pattern to match a versioned artifact. */
 	private final static Pattern VERSIONED_ARTIFACT = Pattern.compile("[^/]+/[^/]+/[^/]+");
 
-	// TODO Document.
+    /**
+     * Create an artifact association that reads the properties file resources
+     * obtained from the class loader at the given path.
+     * 
+     * @param path
+     *            The path.
+     * @throws IOException
+     *             For any I/O error.
+     */
 	public ArtifactAssociation(String path) throws IOException {
 		this.commands = getCommands(path);
 	}
 
 	/**
 	 * Read the commands from the version to command map files in the classpath.
-	 * The files are named
-	 * <code>/META-INF/services/com.goodworkalan.cups.installer.commands.properties</code>
 	 * .
 	 * 
 	 * @return A map of unversioned artifact keys to a map of versions to
@@ -71,8 +82,15 @@ public class ArtifactAssociation {
 		}
 		return commands;
 	}
-	
-	// TODO Document.
+
+    /**
+     * Get the string associated with the given artifact or <code>null</code> if
+     * there is no string associated with the artifact.
+     * 
+     * @param artifact
+     *            The artifact.
+     * @return The string associated with the artifact or <code>null</code>.
+     */
 	public String get(Artifact artifact) {
 		Map<String, String> versions = commands.get(artifact.getUnversionedKey());
 		if (versions == null) {

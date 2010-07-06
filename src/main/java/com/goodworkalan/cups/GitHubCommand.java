@@ -31,13 +31,17 @@ import com.goodworkalan.go.go.version.VersionSelector;
 import com.goodworkalan.ilk.Ilk;
 
 
-//TODO Document.
+/**
+ * Install an artifact hosted at GitHub in the Downloads section of a GitHub project.
+ *
+ * @author Alan Gutierrez
+ */
 @Command(parent = CupsCommand.class, name = "github")
 public class GitHubCommand implements Commandable {
-	// TODO Document.
+    /** Matches an artifact group that indicates GitHub hosting. */
 	private final static Pattern GITHUB_GROUP = Pattern.compile("com\\.github\\.\\w[-\\w\\d]*\\.\\w[-\\w\\d]*");
 
-	// TODO Document.
+	/** Extract the version and file suffix from the GitHub Download file name. */
 	private final static Pattern EXTRACT_VERSION = Pattern.compile("^(?:\\w[-_\\w\\d]*\\-)+((?:\\.?\\d+)+)(.*?)$");
 
 	/** If true, install even if there is already an artifact installed. */
@@ -51,13 +55,26 @@ public class GitHubCommand implements Commandable {
     /** Whether or not to return a list of build dependencies. */
     @Argument
     public boolean buildDependencies;
-    
-    // TODO Document.
+
+    /**
+     * Determine whether the given artifact is a GitHub hosted project.
+     * 
+     * @param artifact
+     *            The artifact.
+     * @return True if the given artifact is a GitHub hosted project.
+     */
     private boolean isGitHubProject(Artifact artifact) {
         return GITHUB_GROUP.matcher(artifact.getGroup()).matches();
     }
-    
-    // TODO Document.
+
+    /**
+     * Get the repository account and project from the artifact group of the
+     * given GitHub hosted artifact.
+     * 
+     * @param artifact
+     *            The GitHub hosted artifact.
+     * @return The account and project.
+     */
     private String[] getRepository(Artifact artifact) {
         String[] split = artifact.getGroup().split("\\.");
         return new String[] { split[2], split[3] };
@@ -77,12 +94,12 @@ public class GitHubCommand implements Commandable {
                     Matcher matcher = EXTRACT_VERSION.matcher(fileName);
                     if (matcher.matches()) {
                         String number = matcher.group(1);
-                        Set<String> candidates = byVersion.get(number);
-                        if (candidates == null) {
-                            candidates = new HashSet<String>();
-                            byVersion.put(number, candidates);
+                        Set<String> available = byVersion.get(number);
+                        if (available == null) {
+                            available = new HashSet<String>();
+                            byVersion.put(number, available);
                         }
-                        candidates.add(matcher.group(2));
+                        available.add(matcher.group(2));
                     }
                 }
             }
@@ -132,13 +149,25 @@ public class GitHubCommand implements Commandable {
             throw new CupsError(GitHubCommand.class, "fetch");
         }
     }
-    
-    // TODO Document.
+
+    /**
+     * Return the array of strings created by the given variable string
+     * arguments.
+     * 
+     * @param strings
+     *            The strings.
+     * @return The array created by the variable arguments.
+     */
     private static String[] in(String...strings) {
         return strings;
     }
-    
-    // TODO Document.
+
+    /**
+     * Download an artifact from GitHub, or else return an empty list of build
+     * dependencies if the <code>buildDependencies</code> flag is set.
+     * 
+     * @env The environment.
+     */
     public void execute(Environment env) {
     	if (buildDependencies) {
             env.output(new Ilk<List<Include>>() {}, Collections.<Include>emptyList());

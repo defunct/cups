@@ -5,12 +5,11 @@ import com.goodworkalan.go.go.library.Include;
 import com.goodworkalan.go.go.library.ArtifactPart;
 import com.goodworkalan.go.go.library.ResolutionPart;
 import com.goodworkalan.go.go.library.PathPart;
-import com.goodworkalan.mix.Mix;
-import com.goodworkalan.mix.Project;
-import com.goodworkalan.mix.ProjectModule;
+import com.goodworkalan.cafe.Project;
+import com.goodworkalan.cafe.ProjectModule;
 import com.goodworkalan.go.go.Commandable;
-import com.goodworkalan.mix.builder.Builder;
-import com.goodworkalan.mix.cookbook.JavaProject;
+import com.goodworkalan.cafe.builder.Builder;
+import com.goodworkalan.cafe.outline.JavaProject;
 import com.goodworkalan.comfort.io.Files;
 import java.util.Collections;
 import java.util.TreeSet;
@@ -32,7 +31,7 @@ public class CupsInstallerProject implements ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces("com.github.bigeasy.cups/cups-installer/0.1.1.46")
+                .produces("com.github.bigeasy.cups/cups-installer/0.1.1.47")
                 .depends()
                     .development("org.testng/testng-jdk15/5.10")
                     .end()

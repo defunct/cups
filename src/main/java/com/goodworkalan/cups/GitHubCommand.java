@@ -166,7 +166,8 @@ public class GitHubCommand implements Commandable {
      * Download an artifact from GitHub, or else return an empty list of build
      * dependencies if the <code>buildDependencies</code> flag is set.
      * 
-     * @env The environment.
+     * @param env
+     *            The environment.
      */
     public void execute(Environment env) {
     	if (buildDependencies) {

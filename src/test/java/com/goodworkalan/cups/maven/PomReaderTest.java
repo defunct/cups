@@ -15,7 +15,11 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.go.go.library.Artifact;
 
-// TODO Document.
+/**
+ * Unit tests for the {@link PomReader} class.
+ *
+ * @author Alan Gutierrez
+ */
 public class PomReaderTest {
     /** Test parent. */
     @Test
@@ -34,13 +38,17 @@ public class PomReaderTest {
         assertNull(getPomReader().getParent(new Artifact("com.broken/broken/0.1")));
     }
 
-    // TODO Document.
+    /**
+     * Get a new POM reader.
+     * 
+     * @return A new POM reader.
+     */
     private PomReader getPomReader() {
         PomReader poms = new PomReader(new File("src/test/poms").getAbsoluteFile());
         return poms;
     }
     
-    // TODO Document.
+    /** Test artifact file not found. */
     @Test
     public void artifactNotFound() {
         try {
@@ -51,7 +59,7 @@ public class PomReaderTest {
         fail("Expected exception not thrown.");
     }
     
-    // TODO Document.
+    /** Test listing immediate dependencies. */
     @Test
     public void immediateDependenices() throws FileNotFoundException {
         List<Artifact> artifacts = getPomReader().getImmediateDependencies(new Artifact("org.eclipse.jetty/jetty-project/7.0.0.RC3"));
@@ -64,7 +72,7 @@ public class PomReaderTest {
         }
     }
     
-    // TODO Document.
+    /** Test the logic that determines if an artifact is required. */
     @Test
     public void testRequired() {
         assertTrue(PomReader.required(null, null));
@@ -75,7 +83,7 @@ public class PomReaderTest {
         assertFalse(PomReader.required(null, "true"));
     }
     
-    // TODO Document.
+    /** Test the logic that determines if an artifact is optional. */
     @Test
     public void testOptional() {
         assertTrue(PomReader.optional("test", null));

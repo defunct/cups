@@ -63,8 +63,16 @@ public class PomReader {
             }
         }
     }
-    
-    // TODO Document.
+
+    /**
+     * Get the parent POM for the given artifact or null if the artifact has no
+     * parent POM.
+     * 
+     * @param artifact
+     *            The artifact.
+     * @return The parent or null if the artifact has no parent.
+     * @throws FileNotFoundException
+     */
     public Artifact getParent(Artifact artifact) throws FileNotFoundException {
         Document document = parse(artifact);
         return getParent(document);
